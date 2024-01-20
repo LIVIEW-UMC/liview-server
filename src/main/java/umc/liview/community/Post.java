@@ -5,6 +5,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import umc.liview.tour.domain.Tour;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,6 +24,13 @@ public class Post {
     @Enumerated(EnumType.STRING)
     @Column(name = "post_status")
     private PostStatus postStatus;
+
+    @OneToOne(mappedBy = "post")
+    private Tour tour;
+    @OneToMany(mappedBy = "post")
+    private List<Comments> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "post")
+    private List<Likes> likes = new ArrayList<>();
 
     @Getter
     @RequiredArgsConstructor

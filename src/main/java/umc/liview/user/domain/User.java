@@ -6,6 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import umc.liview.common.BaseTimeEntity;
+import umc.liview.community.Comments;
+import umc.liview.tour.domain.Tour;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,12 +37,22 @@ public class User extends BaseTimeEntity {
     @Column(name = "activation_status")
     private ActivationStatus activationStatus;
 
+    @OneToMany(mappedBy = "user")
+    private List<Folder> folders = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<Follow> follows = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<Tour> tours = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<Comments> comments = new ArrayList<>();
+
 
     @Getter
     @RequiredArgsConstructor
     public enum ActivationStatus {
         ACTIVATED("활성화"),
-        INACTIVATED("비활성화");
+        INACTIVATED("비활성화"),
+        ;
 
         private final String status;
     }
