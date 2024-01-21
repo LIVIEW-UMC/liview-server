@@ -1,10 +1,7 @@
 package umc.liview.user.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import umc.liview.common.BaseTimeEntity;
 import umc.liview.community.Comments;
 import umc.liview.tour.domain.Tour;
@@ -15,6 +12,8 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Builder
+@AllArgsConstructor
 public class User extends BaseTimeEntity {
 
     @Id
@@ -45,7 +44,6 @@ public class User extends BaseTimeEntity {
     private List<Tour> tours = new ArrayList<>();
     @OneToMany(mappedBy = "user")
     private List<Comments> comments = new ArrayList<>();
-
 
     @Getter
     @RequiredArgsConstructor
