@@ -33,8 +33,6 @@ public class UserService {
 
         userRepository.save(user);
     }
-
-
     @Transactional
     public void followUser(Long followerId, Long userId) {
 

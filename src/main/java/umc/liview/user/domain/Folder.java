@@ -33,6 +33,30 @@ public class Folder extends BaseTimeEntity {
         OTHERS("다른_회원_일정"),
         ;
 
-        private final String status;
+        private final String ownerStatus;
+    }
+
+
+    @Column(name = "activation_status")
+    private ActivationStatus activationStatus;
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum ActivationStatus {
+        ACTIVATED("활성화"),
+        INACTIVATED("비활성화"),
+        ;
+
+        private final String activeStatus;
+    }
+
+
+    public void toggleActivationStatus(){
+        if(this.getActivationStatus() == ActivationStatus.ACTIVATED){
+            this.activationStatus = ActivationStatus.INACTIVATED ;
+        }
+        else{
+            this.activationStatus = ActivationStatus.ACTIVATED ;
+        }
     }
 }

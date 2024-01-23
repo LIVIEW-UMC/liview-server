@@ -53,6 +53,17 @@ public class User extends BaseTimeEntity {
         INACTIVATED("비활성화"),
         ;
 
+
         private final String status;
+    }
+
+
+    public void toggleActivationStatus(){
+        if(this.getActivationStatus() == ActivationStatus.ACTIVATED){
+            this.activationStatus = ActivationStatus.INACTIVATED;
+        }
+        else{
+            this.activationStatus = ActivationStatus.ACTIVATED;
+        }
     }
 }
