@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import umc.liview.user.domain.User;
 import umc.liview.user.service.UserService;
 
-@RestController
+@RestController //레스트 컨트롤러
 @RequiredArgsConstructor
-//@RequestMapping("/follow") // 대표주소
+//@RequestMapping("/follow") // 대표주소 설정
 public class UserController {
     // 생성자 방식인데 빌더로 바꿔보자 담에
     private final UserService userService;

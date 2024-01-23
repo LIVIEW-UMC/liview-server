@@ -11,9 +11,4 @@ public interface FollowRepositiory extends JpaRepository<Follow,Long> {
 
 
 
-
-
-
-
-
 }

@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     // 비즈니스 예외 처리시 발생
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
-        return ErrorResponse.toResponseEntity(e.getErrorCode());3
+        return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 
     // javax.validation.Valid or @Validated 으로 binding error 발생시 발생

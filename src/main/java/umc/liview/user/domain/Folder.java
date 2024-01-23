@@ -1,15 +1,15 @@
 package umc.liview.user.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import umc.liview.common.BaseTimeEntity;
+import umc.liview.user.dto.FolderDTO;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Builder
+@AllArgsConstructor
 public class Folder extends BaseTimeEntity {
 
     @Id
@@ -36,9 +36,10 @@ public class Folder extends BaseTimeEntity {
         private final String ownerStatus;
     }
 
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "activation_status")
     private ActivationStatus activationStatus;
+
 
     @Getter
     @RequiredArgsConstructor
@@ -59,4 +60,15 @@ public class Folder extends BaseTimeEntity {
             this.activationStatus = ActivationStatus.ACTIVATED ;
         }
     }
+
+
+    public static Folder toFolderEntity(FolderDTO folderDTO){
+        return Folder.builder()
+                .name(folderDTO.getName())
+                .owner(folderDTO.getOwner())
+                .activationStatus(folderDTO.getActivationStatus())
+                .build();
+    }
+
+
 }

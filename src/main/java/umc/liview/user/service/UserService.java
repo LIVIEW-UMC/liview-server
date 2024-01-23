@@ -14,10 +14,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final FollowRepositiory followRepository;
+
+    //Refactor
+    //ServiceImpl 추가,DAO 추가, Autiowired로 레포지토리 의존성 주입,DataHandler ?
 
 
     // 팔로워 아이디넣고
