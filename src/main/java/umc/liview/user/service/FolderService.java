@@ -29,4 +29,8 @@ public class FolderService {
 
         folderRepository.save(folder);
     }
+
+    public void deleteFolderService(Long folderId) {
+        folderRepository.deleteById(folderId);
+    }
 }

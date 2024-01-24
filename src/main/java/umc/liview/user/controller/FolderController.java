@@ -9,9 +9,6 @@ import umc.liview.user.domain.Folder;
 import umc.liview.user.dto.FolderDTO;
 import umc.liview.user.service.FolderService;
 
-
-
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tours")
@@ -21,7 +18,7 @@ public class FolderController {
     private static final Logger logger = LoggerFactory.getLogger(FolderController.class);
 
 
-//    @GetMapping("/") //폴더 리스트 조회 API
+    //    @GetMapping("/") //폴더 리스트 조회 API
 //    public List<FolderDTO> FolderListController(
 //            @RequestParam String owner){
 //        // owner=true -> 내 일정이 담긴 폴더
@@ -39,8 +36,9 @@ public class FolderController {
 //        }
 //
 //    }
-
-
+//
+//
+//
 //    Refactor 1. createFolder   인증후 user_id 넣어줘야 함. 현재 NULL
 //             2. elif 밑에 else로 예외처리 해줘야함. False 같은 거 들어오면 예외로 해야해
 //             3. 같은 유저가 같은 이름이 중복되면 안된다고 예외처리도 해줘야 해. 안했을 시에 삭제,조회 시에 문제 생길 거 같아
@@ -53,7 +51,6 @@ public class FolderController {
         logger.info(String.valueOf(tempfolderDTO.getUserId()));
         // owner=true -> 내 일정이 담긴 폴더
         if (owner.equals("true")) {
-
 
             FolderDTO folderDTO = FolderDTO.builder()
                     .name(tempfolderDTO.getName())
@@ -77,8 +74,14 @@ public class FolderController {
                     .build();
 
             folderService.createFolder(folderDTO);
-
         }
-
     }
+
+    @DeleteMapping("/folder/{folder_Id}")
+    public void deleteFolderController(
+            @PathVariable("folder_Id") Long folderId) {
+        folderService.deleteFolderService(folderId);
+    }
+
+
 }
