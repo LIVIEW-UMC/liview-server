@@ -60,12 +60,11 @@ public class Folder extends BaseTimeEntity {
             this.activationStatus = ActivationStatus.ACTIVATED ;
         }
     }
-
-
-    public static Folder toFolderEntity(FolderDTO folderDTO){
+        public static Folder toFolderEntity(FolderDTO folderDTO){
         return Folder.builder()
                 .name(folderDTO.getName())
                 .owner(folderDTO.getOwner())
+
                 .activationStatus(folderDTO.getActivationStatus())
                 .build();
     }
