@@ -17,7 +17,7 @@ public class FolderService {
 
     public void createFolder(FolderDTO folderDTO) {
         //이거 예외처리하자
-        User user  = userRepository.findById(folderDTO.getUserId();
+        User user  = userRepository.getById(folderDTO.getUserId());
 
 
         Folder folder = Folder.builder()
