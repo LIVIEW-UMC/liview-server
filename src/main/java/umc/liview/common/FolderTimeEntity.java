@@ -16,7 +16,9 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-public class BaseTimeEntity {
+@SuperBuilder //rename시 타임을 그대로 넘겨줄 때 사용
+@NoArgsConstructor
+public class FolderTimeEntity {
 
     @CreatedDate
     private LocalDateTime createdAt;

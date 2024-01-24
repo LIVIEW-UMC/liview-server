@@ -75,6 +75,9 @@ public class FolderController {
 
             folderService.createFolder(folderDTO);
         }
+
+
+
     }
 
     @DeleteMapping("/folder/{folder_Id}")
@@ -83,5 +86,17 @@ public class FolderController {
         folderService.deleteFolderService(folderId);
     }
 
+
+    @PatchMapping("/folder/rename")
+    public void renameFolderController(
+            @RequestBody FolderDTO tempFolderDTO){
+
+        FolderDTO folderDTO = FolderDTO.builder()
+                .id(tempFolderDTO.getId())
+                .name(tempFolderDTO.getName())
+                .build();
+
+        folderService.renameFolderService(folderDTO);
+    }
 
 }

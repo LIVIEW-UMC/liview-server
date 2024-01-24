@@ -2,15 +2,17 @@ package umc.liview.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import umc.liview.common.BaseTimeEntity;
+import umc.liview.common.FolderTimeEntity;
 import umc.liview.user.dto.FolderDTO;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
-public class Folder extends BaseTimeEntity {
+public class Folder extends FolderTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,7 +66,6 @@ public class Folder extends BaseTimeEntity {
         return Folder.builder()
                 .name(folderDTO.getName())
                 .owner(folderDTO.getOwner())
-
                 .activationStatus(folderDTO.getActivationStatus())
                 .build();
     }
