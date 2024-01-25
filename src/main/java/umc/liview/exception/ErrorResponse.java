@@ -6,11 +6,14 @@ import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import umc.liview.exception.code.ErrorCode;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
 
+    private final LocalDateTime timestamp = LocalDateTime.now();
     private final int status;
     private final String error;
     private final String code;
@@ -38,5 +41,16 @@ public class ErrorResponse {
                         .message(errorCode.getMessage())
                         .detail(message)
                         .build());
+    }
+
+    @Override
+    public String toString() {
+        return "{\n" +
+                "    \"timestamp\":" + timestamp + ",\n" +
+                "    \"status\":" + status + ",\n" +
+                "    \"error\":\"" + error + "\",\n" +
+                "    \"code\":\"" + code + "\",\n" +
+                "    \"message\":\"" + message + "\"\n" +
+                "}";
     }
 }

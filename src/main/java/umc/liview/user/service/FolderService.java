@@ -19,7 +19,6 @@ public class FolderService {
         //이거 예외처리하자
         User user  = userRepository.getById(folderDTO.getUserId());
 
-
         Folder folder = Folder.builder()
                 .user(user)
                 .name(folderDTO.getName())
