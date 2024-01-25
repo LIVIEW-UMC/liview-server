@@ -1,4 +1,4 @@
-package umc.liview.common;
+package umc.liview.common.basetime;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
