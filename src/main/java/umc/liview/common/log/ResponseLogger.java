@@ -28,9 +28,10 @@ public class ResponseLogger {
     // Failed Response With Exception
     public static void loggingWithExceptionInfo(ResponseEntity<ErrorResponse> response, Exception ex) {
         StringBuilder logBuilder = new StringBuilder();
-        logBuilder.append(getLoggingStructure());
-        logBuilder.append(getExceptionName(ex)).append(": ").append(parsingExceptionMessage(ex)).append("\n");  // Server에서 확인하는 Exception Response
-        logBuilder.append("[Response Body With Exception]").append("\n").append(response.getBody());    // Client에 응답으로 내려주는 Exception Response
+        logBuilder.append(getExceptionHandlingLoggingStructure());
+        logBuilder.append("[Exception Class] : ").append(getExceptionName(ex)).append("\n");
+        logBuilder.append("[Exception Message] : ").append(parsingExceptionMessage(ex)).append("\n");  // Server에서 확인하는 Exception Response
+        logBuilder.append("[Response Body With Exception] : ").append("\n").append(response.getBody());    // Client에 응답으로 내려주는 Exception Response
         log.warn(logBuilder.toString());
     }
 
@@ -55,7 +56,7 @@ public class ResponseLogger {
 
     // Logging Exception Class Name
     private static String getExceptionName(Exception e) {
-        return "[" + e.getClass().getSimpleName() + "]";
+        return e.getClass().getSimpleName();
     }
 
     // Logging Exception Message
@@ -72,6 +73,10 @@ public class ResponseLogger {
     }
 
     public static String getLoggingStructure() {
-        return "\n" + "This is Responsing Information." + "\n";
+        return "\n" + "[Title] : Responsing Information" + "\n";
+    }
+
+    public static String getExceptionHandlingLoggingStructure() {
+        return "\n" + "[Title] : Handling Exception Information" + "\n";
     }
 }

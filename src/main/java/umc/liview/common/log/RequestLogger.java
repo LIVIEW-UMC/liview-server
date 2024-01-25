@@ -19,15 +19,15 @@ public class RequestLogger {
         StringBuilder logBuilder = new StringBuilder();
         logBuilder.append(getLoggingStructure());
         logBuilder.append(getRequestURI(request)).append("\n");
-        logBuilder.append("[Request Headers] ").append(parsingHeaders(request)).append("\n");
-        logBuilder.append("[Request Body] ").append("\n").append(parsingBody(request));
+        logBuilder.append("[Request Headers] : ").append(parsingHeaders(request)).append("\n");
+        logBuilder.append("[Request Body] : ").append("\n").append(parsingBody(request));
         log.info(logBuilder.toString());
     }
 
     // Logging Requested URI
     private static String getRequestURI(HttpServletRequest request) {
-        String httpMethod = "[HTTP Method] " + request.getMethod();
-        String requestURI = "[Request URI] " + request.getRequestURI();
+        String httpMethod = "[HTTP Method] : " + request.getMethod();
+        String requestURI = "[Request URI] : " + request.getRequestURI();
 
         return httpMethod + "\n" + requestURI;
     }
@@ -62,6 +62,6 @@ public class RequestLogger {
     }
 
     public static String getLoggingStructure() {
-        return "\n" + "This is Requested Information." + "\n";
+        return "\n" + "[Title] : Successful Requested Information" + "\n";
     }
 }
