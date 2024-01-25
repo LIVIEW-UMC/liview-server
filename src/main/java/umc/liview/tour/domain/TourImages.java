@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
-import umc.liview.common.BaseTimeEntity;
+import umc.liview.common.basetime.BaseTimeEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
