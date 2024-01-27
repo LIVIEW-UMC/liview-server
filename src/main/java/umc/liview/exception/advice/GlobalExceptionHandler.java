@@ -16,6 +16,7 @@ import umc.liview.exception.ErrorResponse;
 import umc.liview.exception.code.ErrorCode;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -82,7 +83,8 @@ public class GlobalExceptionHandler {
         ResponseEntity<ErrorResponse> response;
         if (e.getClass().equals(MethodArgumentNotValidException.class)) {
             response = ErrorResponse.toResponseEntity(ErrorCode.INVALID_REQUEST_PARAMETER,
-                    Objects.requireNonNull(((MethodArgumentNotValidException) e).getBindingResult().getFieldError()).getDefaultMessage());
+                    ((MethodArgumentNotValidException) e).getBindingResult().getFieldErrors().stream()
+                            .map(err -> err.getDefaultMessage()).collect(Collectors.joining(" and ")));
         } else {
             response = ErrorResponse.toResponseEntity(errorCode);
         }
