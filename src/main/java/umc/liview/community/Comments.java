@@ -25,3 +25,4 @@ public class Comments{
     @JoinColumn(name = "user_id")
     private User user;
 }
+
