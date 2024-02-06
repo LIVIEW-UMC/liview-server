@@ -7,6 +7,7 @@ import umc.liview.user.domain.Folder;
 @Setter
 @Builder
 @NoArgsConstructor
+@ToString
 @AllArgsConstructor
 public class FolderDTO {
 

@@ -24,6 +24,7 @@ public class TourImages extends BaseTimeEntity {
     @Column(name = "is_representative")
     private boolean isRepresentative;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tour_id")
     private Tour tour;

@@ -51,6 +51,10 @@ public class Folder extends BaseTimeEntity {
         private final String activeStatus;
     }
 
+    public Folder changeName(String name){
+        this.name = name;
+        return this;
+    }
 
     public void toggleActivationStatus(){
         if(this.getActivationStatus() == ActivationStatus.ACTIVATED){

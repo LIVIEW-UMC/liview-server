@@ -7,7 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import umc.liview.user.domain.Folder;
 import umc.liview.user.dto.FolderDTO;
+import umc.liview.user.dto.UserDTO;
 import umc.liview.user.service.FolderService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,25 +21,15 @@ public class FolderController {
     private static final Logger logger = LoggerFactory.getLogger(FolderController.class);
 
 
-    //    @GetMapping("/") //폴더 리스트 조회 API
-//    public List<FolderDTO> FolderListController(
-//            @RequestParam String owner){
-//        // owner=true -> 내 일정이 담긴 폴더
-//        if (owner.equals("true")){
-//
-//
-//            return List<FolderDTO> ;
-//        }
-//        // owner=false -> 상대 일정이 담긴 폴더
-//        else if(owner.equals("false")){
-//
-//
-//
-//            return List<FolderDTO> ;
-//        }
-//
-//    }
-//
+    @GetMapping("/folder") //폴더 리스트 조회 API
+    public List<FolderDTO> FolderListController(
+            @RequestParam String owner) {
+
+        Long userId = 1L;
+        return folderService.getMyFolder(userId, owner);
+    }
+
+
 //
 //
 //    Refactor 1. createFolder   인증후 user_id 넣어줘야 함. 현재 NULL
@@ -82,6 +75,17 @@ public class FolderController {
             @PathVariable("folder_Id") Long folderId) {
         folderService.deleteFolderService(folderId);
     }
+
+
+
+
+    @PatchMapping("/folder/rename")
+    public void renameFolderController(@RequestBody FolderDTO requestFolderDTO){
+        logger.info(requestFolderDTO.toString());
+        folderService.renameFolder(requestFolderDTO);
+
+    }
+
 
 
 }
