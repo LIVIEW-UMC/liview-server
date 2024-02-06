@@ -2,7 +2,7 @@ package umc.liview.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import umc.liview.common.BaseTimeEntity;
+import umc.liview.common.basetime.BaseTimeEntity;
 import umc.liview.user.dto.FolderDTO;
 
 @Entity
