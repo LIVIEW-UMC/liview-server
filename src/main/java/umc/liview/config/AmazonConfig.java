@@ -35,6 +35,23 @@ public class AmazonConfig {
     @Value(("${cloud.aws.s3.bucket}"))
     private String bucket;
 
+//
+//    @Bean
+//    public AmazonS3Client amazonS3() {
+//        BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
+//        return  (AmazonS3Client) AmazonS3ClientBuilder
+//                .standard()
+//                .withRegion(region)
+//                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+//                .build();
+//    }
+//
+//
+//
+
+
+
+
     @PostConstruct
     public void init() {
         this.awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
@@ -55,10 +72,5 @@ public class AmazonConfig {
         return new AWSStaticCredentialsProvider(awsCredentials);
     }
 
-
-//
-//    public String getBucket(){
-//        return "umcccc";
-//    }
 
 }

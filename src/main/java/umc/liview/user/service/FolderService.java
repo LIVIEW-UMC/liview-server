@@ -35,6 +35,8 @@ public class FolderService {
         folderRepository.deleteById(folderId);
     }
 
+
+
     public List<FolderDTO> getMyFolder(Long userId, String owner) {
         //내 게시글이 담긴 나의 폴더
         List<FolderDTO> myFolderDTOList = new ArrayList<>();

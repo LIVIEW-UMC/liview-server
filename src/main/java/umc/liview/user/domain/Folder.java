@@ -3,7 +3,11 @@ package umc.liview.user.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.liview.common.basetime.BaseTimeEntity;
+import umc.liview.tour.domain.TourTags;
 import umc.liview.user.dto.FolderDTO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,6 +29,10 @@ public class Folder extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "folder" ,cascade = CascadeType.ALL)
+    private List<StoredTours> storedTours = new ArrayList<>();
+
 
     @Getter
     @RequiredArgsConstructor

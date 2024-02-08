@@ -2,7 +2,7 @@ package umc.liview.aws.s3;
 
 import jakarta.persistence.*;
 import lombok.*;
-import umc.liview.common.BaseTimeEntity;
+import umc.liview.common.basetime.BaseTimeEntity;
 
 @Entity
 @Builder
