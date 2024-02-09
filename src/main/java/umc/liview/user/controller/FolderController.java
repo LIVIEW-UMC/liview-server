@@ -29,9 +29,6 @@ public class FolderController {
         return folderService.getMyFolder(userId, owner);
     }
 
-
-//
-//
 //    Refactor 1. createFolder   인증후 user_id 넣어줘야 함. 현재 NULL
 //             2. elif 밑에 else로 예외처리 해줘야함. False 같은 거 들어오면 예외로 해야해
 //             3. 같은 유저가 같은 이름이 중복되면 안된다고 예외처리도 해줘야 해. 안했을 시에 삭제,조회 시에 문제 생길 거 같아
@@ -76,16 +73,9 @@ public class FolderController {
         folderService.deleteFolderService(folderId);
     }
 
-
-
-
     @PatchMapping("/folder/rename")
     public void renameFolderController(@RequestBody FolderDTO requestFolderDTO){
         logger.info(requestFolderDTO.toString());
         folderService.renameFolder(requestFolderDTO);
-
     }
-
-
-
 }
