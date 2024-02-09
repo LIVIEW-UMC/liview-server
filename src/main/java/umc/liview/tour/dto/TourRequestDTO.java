@@ -22,5 +22,6 @@ public class TourRequestDTO {
     private List<String> hashtag;
     private String isClassfied;
     private Long tourId;
+    private Long folderId;
 
 }

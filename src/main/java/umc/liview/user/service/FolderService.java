@@ -60,6 +60,7 @@ public class FolderService {
 
     }
 
+
     public void renameFolder(FolderDTO requestFolderDTO) {
         Folder folder = folderRepository.getById(requestFolderDTO.getId());
         folder.changeName(requestFolderDTO.getName());

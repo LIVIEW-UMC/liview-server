@@ -19,6 +19,7 @@ import umc.liview.tour.repository.TourImageRepository;
 import umc.liview.tour.repository.TourRepository;
 import umc.liview.tour.repository.TourTagsRepository;
 import umc.liview.user.domain.Folder;
+import umc.liview.user.domain.FolderRepository;
 import umc.liview.user.domain.StoredTours;
 import umc.liview.user.domain.StoredToursRepository;
 
@@ -37,7 +38,7 @@ public class TourService {
     private final TourImageRepository tourImageRepository;
     private final AmazonS3Manager s3Manager;
     private final StoredToursRepository storedToursRepository ;
-
+    private final FolderRepository folderRepository;
 
     //폴더 저장 로직!
     // i) DTO가 Compelete 라면
@@ -80,9 +81,6 @@ public class TourService {
     }
 
 
-
-
-
     // 폴더 선택하면 폴더에 넣어지도록 !!
     @Transactional
     public void makeTourService(TourRequestDTO tourRequestDTO, List<ImageCreateDTO> imageCreateDTOS){
@@ -97,8 +95,6 @@ public class TourService {
         tour.changeCompleteStatus(tourRequestDTO.getCompleteStatus());
         //해시태그 수정도 해야 해
         deleteHashtag(tour);
-        log.info("투어 아이디 "+String.valueOf(tour.getId()));
-
         tourRepository.save(tour);
         createHashtag(tour,tourRequestDTO.getHashtag());
 
@@ -120,8 +116,14 @@ public class TourService {
         }
 
 
+    //임시저장 -> 생성
+        if (tourRequestDTO.getIsClassfied().equals("true") && tourRequestDTO.getCompleteStatus().equals(Tour.CompleteStatus.COMPLETE)){
+            Optional<Folder> folder = folderRepository.findById(tourRequestDTO.getFolderId());
+            classfiedTour(tour,folder.get());
+
+        }
     }
-    else{
+    else{ //바로 생성
     Tour tour = Tour.toTourEntity(tourRequestDTO);
     tourRepository.save(tour);
     createHashtag(tour,tourRequestDTO.getHashtag());
@@ -142,7 +144,15 @@ public class TourService {
 
         tourImageRepository.save(tourImages);
     }
+
+        if (tourRequestDTO.getIsClassfied().equals("true") && tourRequestDTO.getCompleteStatus().equals(Tour.CompleteStatus.COMPLETE)){
+            Optional<Folder> folder = folderRepository.findById(tourRequestDTO.getFolderId());
+            classfiedTour(tour,folder.get());
+        }
+
     }
+
+
 
 
     }

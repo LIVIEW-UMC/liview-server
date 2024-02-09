@@ -70,6 +70,7 @@ public class Tour extends Serializers.Base {
                 .completeStatus(tourRequestDTO.getCompleteStatus())
                 .contents(tourRequestDTO.getContents())
                 .title(tourRequestDTO.getTitle())
+                .isClassified(Boolean.parseBoolean(tourRequestDTO.getIsClassfied()))
                 .build();
 
     }
