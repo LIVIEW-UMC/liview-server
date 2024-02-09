@@ -1,5 +1,6 @@
 package umc.liview.user.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.liview.common.basetime.BaseTimeEntity;
@@ -30,6 +31,7 @@ public class Folder extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "folder" ,cascade = CascadeType.ALL)
     private List<StoredTours> storedTours = new ArrayList<>();
 

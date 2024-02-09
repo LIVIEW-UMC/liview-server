@@ -1,5 +1,6 @@
 package umc.liview.tour.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class Tag {
     @Column(name = "name")
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "tag")
     private List<TourTags> tourTags = new ArrayList<>();
 

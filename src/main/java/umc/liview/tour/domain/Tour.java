@@ -1,13 +1,19 @@
 package umc.liview.tour.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import umc.liview.community.Post;
 import umc.liview.tour.dto.TourRequestDTO;
 import umc.liview.user.domain.Folder;
 import umc.liview.user.domain.User;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +22,8 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
+@ToString
+@EntityListeners(AuditingEntityListener.class)
 public class Tour extends Serializers.Base {
 
     @Id
@@ -57,12 +65,16 @@ public class Tour extends Serializers.Base {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Transient
+    @JsonManagedReference
+    @OneToMany(mappedBy = "tour")
     private List<TourImages> tourImages = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private List<TourTags> tourTags = new ArrayList<>();
 
+    @CreatedDate
+    private LocalDateTime createdAt;
 
 
     public static Tour toTourEntity(TourRequestDTO tourRequestDTO){
@@ -73,6 +85,10 @@ public class Tour extends Serializers.Base {
                 .isClassified(Boolean.parseBoolean(tourRequestDTO.getIsClassfied()))
                 .build();
 
+    }
+
+    public void setUser(User user){
+        this.user = user;
     }
 
     public void changeTitle(String title){

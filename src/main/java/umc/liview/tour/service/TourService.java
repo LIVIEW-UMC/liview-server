@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import umc.liview.aws.s3.AmazonS3Manager;
-import umc.liview.aws.s3.Uuid;
-import umc.liview.aws.s3.UuidRepository;
+import umc.liview.config.s3.AmazonS3Manager;
 import umc.liview.tour.domain.Tag;
 import umc.liview.tour.domain.Tour;
 import umc.liview.tour.domain.TourImages;
@@ -18,15 +15,10 @@ import umc.liview.tour.repository.TagRepository;
 import umc.liview.tour.repository.TourImageRepository;
 import umc.liview.tour.repository.TourRepository;
 import umc.liview.tour.repository.TourTagsRepository;
-import umc.liview.user.domain.Folder;
-import umc.liview.user.domain.FolderRepository;
-import umc.liview.user.domain.StoredTours;
-import umc.liview.user.domain.StoredToursRepository;
+import umc.liview.user.domain.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +31,18 @@ public class TourService {
     private final AmazonS3Manager s3Manager;
     private final StoredToursRepository storedToursRepository ;
     private final FolderRepository folderRepository;
+    private final UserRepository userRepository;
+
+    //임시 저장 일정 간단 조회
+
+    public List<Tour> getAllIncompletedTour(Long userId){
+        User user = userRepository.getReferenceById(userId);
+        List<Tour> tourList = tourRepository.findAllByUserAndCompleteStatus(user,Tour.CompleteStatus.INCOMPLETE);
+
+        return tourList;
+    }
+
+
 
     //폴더 저장 로직!
     // i) DTO가 Compelete 라면
@@ -83,7 +87,10 @@ public class TourService {
 
     // 폴더 선택하면 폴더에 넣어지도록 !!
     @Transactional
-    public void makeTourService(TourRequestDTO tourRequestDTO, List<ImageCreateDTO> imageCreateDTOS){
+    public void makeTourService(TourRequestDTO tourRequestDTO, List<ImageCreateDTO> imageCreateDTOS,Long userId){
+
+        User user = userRepository.getReferenceById(userId);
+
 
     if (tourRequestDTO.getTourId() != null){
         Optional<Tour> tourTemp = tourRepository.findById(tourRequestDTO.getTourId());
@@ -124,7 +131,9 @@ public class TourService {
         }
     }
     else{ //바로 생성
+
     Tour tour = Tour.toTourEntity(tourRequestDTO);
+    tour.setUser(user);
     tourRepository.save(tour);
     createHashtag(tour,tourRequestDTO.getHashtag());
 
@@ -151,9 +160,17 @@ public class TourService {
         }
 
     }
-
-
-
-
     }
+
+
+    @Transactional
+    public Tour getTour(Long tourId) {
+        return tourRepository.getReferenceById(tourId);
+    }
+
+    @Transactional
+    public  Tour getDetailIncompletedTourService(Long tourId) {
+        return tourRepository.getReferenceById(tourId);
+    }
+
 }

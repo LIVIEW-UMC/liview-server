@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface TourTagsRepository extends JpaRepository<TourTags,Long> {
 
-    List<TourTags> findAllByTour(Tour tour);
+    List<TourTags> findAllByTourId(Long tourId);
 
     void deleteAllByTourId(Long tourId);
 

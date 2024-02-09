@@ -1,5 +1,6 @@
 package umc.liview.tour.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -12,6 +13,7 @@ import java.util.Date;
 @Getter
 @Builder
 @AllArgsConstructor
+@ToString
 public class TourImages extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +39,7 @@ public class TourImages extends BaseTimeEntity {
     @Column(name = "is_Thumbnail")
     private boolean isThumbnail;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) //일정 삭제시 이미지도 자동으로 삭제 되도록
     @JoinColumn(name = "tour_id")
     private Tour tour;
