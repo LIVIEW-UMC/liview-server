@@ -11,7 +11,7 @@ import umc.liview.common.log.LoggingInterceptor;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     // Register Interceptor for Logging
-    final LoggingInterceptor loggingInterceptor;
+    private final LoggingInterceptor loggingInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

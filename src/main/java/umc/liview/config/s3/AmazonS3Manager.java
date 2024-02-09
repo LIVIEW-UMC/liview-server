@@ -1,4 +1,4 @@
-package umc.liview.aws.s3;
+package umc.liview.config.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
