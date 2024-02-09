@@ -24,6 +24,10 @@ public enum ErrorCode {
 
     // Tour
     TOUR_NOT_FOUND(TourCode.NOT_FOUND.getCode(), NOT_FOUND, "존재하지 않는 일정"),
+
+
+    // User
+    USER_NOT_FOUND(UserCode.NOT_FOUND.getCode(), NOT_FOUND, "존재하지 않는 유저 아이디"),
     ;
 
     private final String code;

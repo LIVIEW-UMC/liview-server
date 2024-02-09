@@ -5,6 +5,8 @@ import lombok.*;
 import umc.liview.common.basetime.BaseTimeEntity;
 import umc.liview.community.Comments;
 import umc.liview.tour.domain.Tour;
+import umc.liview.user.dto.UserDTO;
+import umc.liview.user.web.dto.UserRequestDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,5 +67,12 @@ public class User extends BaseTimeEntity {
         else{
             this.activationStatus = ActivationStatus.ACTIVATED;
         }
+    }
+
+    public void modifyUserProfile(UserRequestDTO.PutUserProfile userProfile){
+        this.firstName = userProfile.getFirstName();
+        this.secondName = userProfile.getSecondName();
+        this.email = userProfile.getEmail();
+        this.introduction = userProfile.getIntroduction();
     }
 }

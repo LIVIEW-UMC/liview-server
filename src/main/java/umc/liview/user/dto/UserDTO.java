@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import umc.liview.user.domain.PrivacyStatus;
 import umc.liview.user.domain.User;
+import umc.liview.user.web.dto.UserRequestDTO;
 
 
 @Getter
@@ -37,5 +38,4 @@ public class UserDTO {
 
         return userDTO;
     }
-
 }
