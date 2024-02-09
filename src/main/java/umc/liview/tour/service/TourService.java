@@ -3,6 +3,7 @@ package umc.liview.tour.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.liview.aws.s3.AmazonS3Manager;
 import umc.liview.aws.s3.Uuid;
@@ -37,6 +38,10 @@ public class TourService {
     private final AmazonS3Manager s3Manager;
     private final StoredToursRepository storedToursRepository ;
 
+
+    //폴더 저장 로직!
+    // i) DTO가 Compelete 라면
+    // ii) classfiedTour 실행 folder와 tour 기입
     public void classfiedTour(Tour tour, Folder folder)
     {
         storedToursRepository.save(StoredTours.builder()
@@ -44,6 +49,7 @@ public class TourService {
                         .folder(folder)
                         .build());
     }
+
     public void createHashtag(Tour tour, List<String> tagNames){
 
         for(String hashtag : tagNames) {
@@ -68,9 +74,31 @@ public class TourService {
         }
     }
 
+    @Transactional
+    public void deleteHashtag(Tour tour){
+        tourTagsRepository.deleteAllByTourId(tour.getId());
+    }
+
+
+
+
+
+    // 폴더 선택하면 폴더에 넣어지도록 !!
+    @Transactional
     public void makeTourService(TourRequestDTO tourRequestDTO, List<ImageCreateDTO> imageCreateDTOS){
 
-        Tour tour = Tour.toTourEntity(tourRequestDTO);
+    if (tourRequestDTO.getTourId() != null){
+        Optional<Tour> tourTemp = tourRepository.findById(tourRequestDTO.getTourId());
+        Tour tour = tourTemp.get();
+
+        tour.changeClassfied(Boolean.parseBoolean(tourRequestDTO.getIsClassfied()));
+        tour.changeContent(tourRequestDTO.getContents());
+        tour.changeTitle(tourRequestDTO.getTitle());
+        tour.changeCompleteStatus(tourRequestDTO.getCompleteStatus());
+        //해시태그 수정도 해야 해
+        deleteHashtag(tour);
+        log.info("투어 아이디 "+String.valueOf(tour.getId()));
+
         tourRepository.save(tour);
         createHashtag(tour,tourRequestDTO.getHashtag());
 
@@ -78,7 +106,7 @@ public class TourService {
         for (ImageCreateDTO img : imageCreateDTOS) {
             String imgURL = s3Manager.uploadFile(img.getFile());
 
-                 TourImages tourImages = TourImages.builder()
+            TourImages tourImages = TourImages.builder()
                     .imageUrl(imgURL)
                     .tour(tour)
                     .date(img.getDate())
@@ -89,9 +117,32 @@ public class TourService {
                     .build();
 
             tourImageRepository.save(tourImages);
-
-            // 파일과 메타데이터 처리 로직
         }
+
+
+    }
+    else{
+    Tour tour = Tour.toTourEntity(tourRequestDTO);
+    tourRepository.save(tour);
+    createHashtag(tour,tourRequestDTO.getHashtag());
+
+    // 투어 생성 -> for each 이미지 업로드 => Tourimage생성
+    for (ImageCreateDTO img : imageCreateDTOS) {
+        String imgURL = s3Manager.uploadFile(img.getFile());
+
+        TourImages tourImages = TourImages.builder()
+                .imageUrl(imgURL)
+                .tour(tour)
+                .date(img.getDate())
+                .isThumbnail(Boolean.parseBoolean(img.getIsThumbnail()))
+                .latitude(img.getLatitude())
+                .longitude(img.getLongitude())
+                .imageLocation(img.getImgLocation())
+                .build();
+
+        tourImageRepository.save(tourImages);
+    }
+    }
 
 
     }

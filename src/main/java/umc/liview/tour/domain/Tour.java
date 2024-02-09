@@ -26,8 +26,7 @@ public class Tour extends Serializers.Base {
     private String title;
     @Column(name = "contents")
     private String contents;
-//    @Column(name = "is_completed") 없어도 될 거 같은데 ?
-//    private boolean isCompleted;
+
     @Column(name = "is_classified") //얜 뭐하는 애지 ?
     private boolean isClassified;
 
@@ -73,6 +72,22 @@ public class Tour extends Serializers.Base {
                 .title(tourRequestDTO.getTitle())
                 .build();
 
+    }
+
+    public void changeTitle(String title){
+        this.title = title;
+    }
+
+    public void changeContent(String contents){
+        this.contents = contents;
+    }
+
+    public void changeCompleteStatus(Tour.CompleteStatus status){
+        this.completeStatus = status;
+    }
+
+    public void changeClassfied(boolean bool){
+        this.isClassified = bool;
     }
 
 

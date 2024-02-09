@@ -1,5 +1,6 @@
 package umc.liview.tour.dto;
 
+import jakarta.persistence.Id;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.liview.tour.domain.Tour;
@@ -20,6 +21,6 @@ public class TourRequestDTO {
     private Tour.CompleteStatus completeStatus;
     private List<String> hashtag;
     private String isClassfied;
-    private Long folderId;
+    private Long tourId;
 
 }
