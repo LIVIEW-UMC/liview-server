@@ -17,7 +17,6 @@ public class TourController {
 
     private final TourService tourservice;
 
-
     @PostMapping(value = "/tours")
     public void makeTourController(
             //제목, 내용, 완료여부
@@ -29,11 +28,4 @@ public class TourController {
         tourservice.makeTourService(tourRequestDTO,imageCreateModel.getImageCreateDTOS());
 
     }
-
-
-
-
-
-
-
 }

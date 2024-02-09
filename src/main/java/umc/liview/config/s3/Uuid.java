@@ -1,4 +1,4 @@
-package umc.liview.aws.s3;
+package umc.liview.config.s3;
 
 import jakarta.persistence.*;
 import lombok.*;

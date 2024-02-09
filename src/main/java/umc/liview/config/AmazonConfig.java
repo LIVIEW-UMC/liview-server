@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 public class AmazonConfig {
 
-
     private AWSCredentials awsCredentials;
 
     @Value("${cloud.aws.credentials.accessKey}")
@@ -31,26 +30,8 @@ public class AmazonConfig {
     @Value("${cloud.aws.s3.path.tour}")
     private String tourPath;
 
-
     @Value(("${cloud.aws.s3.bucket}"))
     private String bucket;
-
-//
-//    @Bean
-//    public AmazonS3Client amazonS3() {
-//        BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
-//        return  (AmazonS3Client) AmazonS3ClientBuilder
-//                .standard()
-//                .withRegion(region)
-//                .withCredentials(new AWSStaticCredentialsProvider(credentials))
-//                .build();
-//    }
-//
-//
-//
-
-
-
 
     @PostConstruct
     public void init() {
@@ -71,6 +52,4 @@ public class AmazonConfig {
     public AWSCredentialsProvider awsCredentialsProvider() {
         return new AWSStaticCredentialsProvider(awsCredentials);
     }
-
-
 }

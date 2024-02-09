@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import umc.liview.aws.s3.AmazonS3Manager;
-import umc.liview.aws.s3.Uuid;
-import umc.liview.aws.s3.UuidRepository;
+import umc.liview.config.s3.AmazonS3Manager;
 import umc.liview.tour.domain.Tag;
 import umc.liview.tour.domain.Tour;
 import umc.liview.tour.domain.TourImages;
@@ -23,10 +20,8 @@ import umc.liview.user.domain.FolderRepository;
 import umc.liview.user.domain.StoredTours;
 import umc.liview.user.domain.StoredToursRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
