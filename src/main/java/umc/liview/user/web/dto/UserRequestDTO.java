@@ -13,8 +13,7 @@ public class UserRequestDTO {
     @Getter
     public static class PutUserProfile {
         Long userId;
-        String firstName;
-        String secondName;
+        String Name;
         String email;
         String introduction;
     }

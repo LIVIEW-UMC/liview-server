@@ -7,7 +7,7 @@ import umc.liview.user.web.dto.UserResponseDTO;
 public class UserConverter {
     public static UserResponseDTO.SimpleProfile toSimpleProfile(User user, Long follower, Long following){
         return UserResponseDTO.SimpleProfile.builder()
-                .name(user.getFirstName()+user.getSecondName())
+                .name(user.getName())
                 .email(user.getEmail())
                 .follower(follower)
                 .following(following)
@@ -16,20 +16,10 @@ public class UserConverter {
 
     public static UserResponseDTO.UserProfile toUserProfile(User user){
         return UserResponseDTO.UserProfile.builder()
-                .firstName(user.getFirstName())
-                .secondName(user.getSecondName())
+                .name(user.getName())
                 .introduction(user.getIntroduction())
                 .email(user.getEmail())
                 .path("Not path")
-                .build();
-    }
-
-    public static User toUser(UserRequestDTO.PutUserProfile userProfile){
-        return User.builder()
-                .firstName(userProfile.getFirstName())
-                .secondName(userProfile.getSecondName())
-                .introduction(userProfile.getIntroduction())
-                .email(userProfile.getEmail())
                 .build();
     }
 

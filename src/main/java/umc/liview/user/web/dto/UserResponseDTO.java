@@ -26,8 +26,7 @@ public class UserResponseDTO {
     @Getter
     public static class UserProfile {
         String path;
-        String firstName;
-        String secondName;
+        String name;
         String email;
         String introduction;
     }

@@ -1,13 +1,11 @@
 package umc.liview.user.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import umc.liview.user.domain.PrivacyStatus;
 import umc.liview.user.domain.User;
-import umc.liview.user.web.dto.UserRequestDTO;
 
 
 @Getter
@@ -17,10 +15,8 @@ import umc.liview.user.web.dto.UserRequestDTO;
 
 public class UserDTO {
 
-
     private long id;
-    private String firstName;
-    private String secondName;
+    private String name;
     private String email;
     private String introduction;
     private PrivacyStatus privacyStatus;
@@ -30,9 +26,8 @@ public class UserDTO {
 
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
-        userDTO.setFirstName(user.getFirstName());
+        userDTO.setName(user.getName());
         userDTO.setIntroduction(user.getIntroduction());
-        userDTO.setSecondName(user.getSecondName());
         userDTO.setPrivacyStatus(user.getPrivacyStatus());
         userDTO.setActivationStatus(user.getActivationStatus());
 
