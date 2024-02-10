@@ -25,11 +25,11 @@ public enum JwtException {
     private final String message;
     private final String code;
 
-    public static void setResponse(HttpServletResponse response, JwtException exception) throws IOException {
+    public void setResponse(HttpServletResponse response) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(String.valueOf(createJwtExceptionBody(exception)));
+        response.getWriter().write(String.valueOf(createJwtExceptionBody(this)));
     }
 
     private static ErrorResponse createJwtExceptionBody(JwtException exception) {
