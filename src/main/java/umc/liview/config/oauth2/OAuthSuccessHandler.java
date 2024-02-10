@@ -60,12 +60,13 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         queryParams.add("refresh_token", refreshToken);
         queryParams.add("isNewUser", String.valueOf(isNewUser));
 
-        // http://localhost:3000/loginSuccess
+//         .host("http://localhost:3000/loginSuccess")
+
+        //13.124.86.122
         return UriComponentsBuilder.newInstance()
                 .scheme("http")
-//                .host("localhost")
-                .host("13.124.86.122")
-                .path("/loginSuccess")
+                .host("localhost")
+                 .path("/loginSuccess")
                 .queryParams(queryParams)
                 .build()
                 .toUri();

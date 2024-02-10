@@ -28,13 +28,7 @@ public class UserService {
     // 팔로우 레파지토리에
     // 이 (유저, 팔로워)의 쌍을 찾아야함. 어캐하지  ?딜리트 하면 될 거 같은데
 
-    @Transactional
-    public void join(){
-        User user = User.builder()
-                .build();
 
-        userRepository.save(user);
-    }
     @Transactional
     public void followUser(Long followerId, Long userId) {
 
