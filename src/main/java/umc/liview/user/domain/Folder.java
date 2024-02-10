@@ -21,7 +21,7 @@ public class Folder extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
-    @Column(name = "name")
+    @Column(name = "name",unique = true)
     private String name;
     @Enumerated(EnumType.STRING)
     @Column(name = "owner")

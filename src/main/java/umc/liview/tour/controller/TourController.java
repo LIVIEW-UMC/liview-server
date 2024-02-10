@@ -2,7 +2,9 @@ package umc.liview.tour.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import umc.liview.config.auth.JwtUserDetails;
 import umc.liview.tour.domain.Tour;
 import umc.liview.tour.domain.TourImages;
 import umc.liview.tour.dto.*;
@@ -26,25 +28,28 @@ public class TourController {
     public void makeTourController(
             //제목, 내용, 완료여부
             @RequestPart TourRequestDTO tourRequestDTO,
-            @ModelAttribute ImageCreateModel imageCreateModel
+            @ModelAttribute ImageCreateModel imageCreateModel,
+            @AuthenticationPrincipal JwtUserDetails jwtUserDetails
                 ){
 
-        Long userId = 1L;
+        Long userId = jwtUserDetails.getUserId();
         tourservice.makeTourService(tourRequestDTO,imageCreateModel.getImageCreateDTOS(),userId);
 
     }
 
-    // 임시 저장 일정 간단 조회
+    // 미완성 일정 리스트 조회
     @GetMapping("/tours/incompleted/simple")
-    public List<SimpleIncompletedTourDTO> getAllInCompletedTourController(){
-        Long userId = 1L;
+    public List<SimpleTourDTO> getAllInCompletedTourController(
+            @AuthenticationPrincipal JwtUserDetails jwtUserDetails
+    ){
+        Long userId = jwtUserDetails.getUserId();
         List<Tour> tourList = tourservice.getAllIncompletedTour(userId);
-        List<SimpleIncompletedTourDTO> simpleIncompletedTourDTOS = new ArrayList<>();
+        List<SimpleTourDTO> simpleIncompletedTourDTOS = new ArrayList<>();
 
         if (!tourList.isEmpty()) {
             for(Tour tour : tourList){
                 simpleIncompletedTourDTOS.add(
-                SimpleIncompletedTourDTO.builder()
+                SimpleTourDTO.builder()
                         .tourId(tour.getId())
                         .title(tour.getTitle())
                         .localDateTime(tour.getCreatedAt())
@@ -56,16 +61,16 @@ public class TourController {
         return simpleIncompletedTourDTOS;
     }
 
-    @GetMapping("/tours/incompleted/{tourId}")
+    //미완성 일정 상세 조회
+    @GetMapping("/tours/incompleted/detail/{tourId}")
     public DetailIncompletedTourDTO getDetailIncompletedTourController(
             @PathVariable Long tourId){
 
-            Tour tour = tourservice.getTour(tourId);
+        Tour tour = tourservice.getTour(tourId);
 
         List<TourImages> tourImagesList = new ArrayList<>();
         tourImagesList.add(tourImageService.getThumbnailDetail(tourId));
         tourImagesList.addAll(tourImageService.getNotThumbailDetail(tourId));
-
 
         return DetailIncompletedTourDTO.builder()
                 .tourId(tourId)
@@ -74,12 +79,14 @@ public class TourController {
                 .hashtag(tagService.getHashtag(tourId))
                 .imgList(tourImagesList)
                 .build();
-
     }
 
-
-
-
+    @DeleteMapping("/tours/{tourId}")
+    public void deleteTourController(
+            @PathVariable Long tourId
+    ){
+        tourservice.deleteTourService(tourId);
+    }
 
 
 }

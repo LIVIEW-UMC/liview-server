@@ -8,5 +8,4 @@ import java.util.List;
 public interface FolderRepository extends JpaRepository<Folder,Long> {
 
     List<Folder> getByUserIdAndOwner(Long userId, Folder.Owner owner);
-
 }
