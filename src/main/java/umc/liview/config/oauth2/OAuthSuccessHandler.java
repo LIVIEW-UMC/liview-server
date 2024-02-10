@@ -63,7 +63,8 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         // http://localhost:3000/loginSuccess
         return UriComponentsBuilder.newInstance()
                 .scheme("http")
-                .host("localhost")
+//                .host("localhost")
+                .host("13.124.86.122")
                 .path("/loginSuccess")
                 .queryParams(queryParams)
                 .build()
