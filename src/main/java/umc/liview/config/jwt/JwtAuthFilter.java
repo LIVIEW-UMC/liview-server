@@ -28,12 +28,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String authorizationHeader = request.getHeader("Authorization");
 
-        // Jwt 가 헤더에 있는지 검사
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
             // Jwt 유효성 검증
             if (jwtVerifier.validateToken(token, request)) {
-                // User's Id -> UserDetails
                 Long userId = jwtExtractor.getUserId(token);
                 JwtUserDetails userDetails = new JwtUserDetails(userId);
 

@@ -1,4 +1,4 @@
-package umc.liview.common.log;
+package umc.liview.common.utils.logger;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.experimental.UtilityClass;

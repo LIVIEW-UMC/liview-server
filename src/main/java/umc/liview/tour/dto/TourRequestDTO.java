@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.liview.tour.domain.Tour;
 import umc.liview.tour.domain.TourImages;
+import umc.liview.user.domain.User;
 
 import java.util.List;
 
@@ -23,5 +24,8 @@ public class TourRequestDTO {
     private String isClassfied;
     private Long tourId;
     private Long folderId;
+    private User user;
+
+
 
 }
