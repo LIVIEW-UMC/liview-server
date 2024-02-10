@@ -9,13 +9,11 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import umc.liview.common.log.RequestLogger;
-import umc.liview.common.log.ResponseLogger;
+import umc.liview.common.utils.logger.ResponseLogger;
 import umc.liview.exception.BusinessException;
 import umc.liview.exception.ErrorResponse;
 import umc.liview.exception.code.ErrorCode;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j

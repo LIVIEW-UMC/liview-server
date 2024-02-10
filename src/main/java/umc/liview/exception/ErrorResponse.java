@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
+import umc.liview.config.jwt.JwtException;
 import umc.liview.exception.code.ErrorCode;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,17 @@ public class ErrorResponse {
                         .code(errorCode.getCode())
                         .message(errorCode.getMessage())
                         .detail(message)
+                        .build());
+    }
+
+    public static ResponseEntity<ErrorResponse> toResponseEntity(JwtException jwtException) {
+        return ResponseEntity
+                .status(jwtException.getStatus())
+                .body(ErrorResponse.builder()
+                        .status(jwtException.getStatus().value())
+                        .error(jwtException.getStatus().name())
+                        .code(jwtException.getCode())
+                        .message(jwtException.getMessage())
                         .build());
     }
 
