@@ -26,6 +26,7 @@ public class AuthService {
     public TokenResponse reissue(TokenReissueCommand tokenReissueCommand) {
         // 토큰 -> user's id
         Long userId = jwtExtractor.extractUserId(tokenReissueCommand.accessToken());
+        System.out.println("userId is " + userId);
         // 리프레쉬 토큰 검증
         jwtVerifier.verifyRefreshToken(userId, tokenReissueCommand.refreshToken());
         // 토큰 재발급

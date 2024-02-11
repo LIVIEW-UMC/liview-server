@@ -17,23 +17,20 @@ public class CachingRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        // Avoid MultipartFile Caching
+
+        // Response Wrapping
+        ContentCachingResponseWrapper wrappingResponse = new ContentCachingResponseWrapper(response);
+
+        // Multipart Type 이면 Skip
         if (verifyMultipartFileIncluded(request)) {
-            filterChain.doFilter(request, wrapResponse(response));
+            filterChain.doFilter(request, wrappingResponse);
             return;
         }
-        // Caching Request&Response
-        filterChain.doFilter(wrapRequest(request), wrapResponse(response));
-    }
 
-    private ContentCachingRequestWrapper wrapRequest(HttpServletRequest request) {
-        return new ContentCachingRequestWrapper(request);
-    }
-
-    private ContentCachingResponseWrapper wrapResponse(HttpServletResponse response) throws IOException {
-        ContentCachingResponseWrapper wrappingResponse = new ContentCachingResponseWrapper(response);
+        // Request Wrapping
+        ContentCachingRequestWrapper wrappingRequest = new ContentCachingRequestWrapper(request);
+        filterChain.doFilter(wrappingRequest, wrappingResponse);
         wrappingResponse.copyBodyToResponse();
-        return wrappingResponse;
     }
 
     private boolean verifyMultipartFileIncluded(HttpServletRequest request) {

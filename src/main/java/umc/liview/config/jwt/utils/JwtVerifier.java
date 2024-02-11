@@ -49,9 +49,9 @@ public class JwtVerifier {
 
     public void verifyRefreshToken(long userId, String refreshToken) {
         String storedRefreshToken = findRefreshToken(userId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.TOKEN_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
         if(!storedRefreshToken.equals(refreshToken))
-            throw new NotFoundException(ErrorCode.TOKEN_NOT_FOUND);
+            throw new NotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
     }
 
     public void expireRefreshToken(long userId) {

@@ -17,7 +17,7 @@ public enum ErrorCode {
     DATA_INTEGRITY_VIOLATE(CommonCode.DATA_INTEGRITY.getCode(), BAD_REQUEST, "데이터 무결성을 위반한 경우"),
     FILE_SIZE(CommonCode.FILE_SIZE.getCode(), PAYLOAD_TOO_LARGE, "파일 용량이 초과된 경우"),
     SERVICE_UNAVAILABLE(CommonCode.SERVICE_UNAVAILABLE.getCode(), HttpStatus.SERVICE_UNAVAILABLE, "서비스에 문제가 발생한 경우"),
-    TOKEN_NOT_FOUND(CommonCode.TOKEN_EXPIRED.getCode(), BAD_REQUEST, "만료된 토큰인 경우"),
+    REFRESH_TOKEN_NOT_FOUND(CommonCode.INVALID_REFRESH_TOKEN.getCode(), NOT_FOUND, "유효하지 않은 리프레쉬 토큰일 경우"),
 
     // Tour
     TOUR_NOT_FOUND(TourCode.NOT_FOUND.getCode(), NOT_FOUND, "존재하지 않는 일정"),

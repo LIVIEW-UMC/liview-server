@@ -12,7 +12,7 @@ public enum CommonCode {
     FILE_SIZE("C-004"),
     SERVICE_UNAVAILABLE("C-005"),
     DATA_INTEGRITY("C-006"),
-    TOKEN_EXPIRED("C-007")
+    INVALID_REFRESH_TOKEN("C-007")
     ;
 
     private final String code;

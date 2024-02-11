@@ -30,6 +30,7 @@ public class JwtExtractor {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
+            System.out.println("HERE IS ~~");
             return e.getClaims();
         }
     }
