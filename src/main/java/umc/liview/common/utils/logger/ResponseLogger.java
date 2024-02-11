@@ -84,7 +84,7 @@ public class ResponseLogger {
     }
 
     public static String getLoggingStructure() {
-        return "\n" + "[Title] : Responsing Information" + "\n";
+        return "\n" + "[Title] : Successful Responsing Information" + "\n";
     }
 
     public String getExceptionHandlingLoggingStructure() {
