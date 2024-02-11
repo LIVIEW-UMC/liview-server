@@ -15,7 +15,6 @@ public class UserController {
     // 생성자 방식인데 빌더로 바꿔보자 담에
     private final UserService userService;
 
-
     @PostMapping("/follow/{follower_id}")
     public void follow(@PathVariable("follower_id") Long follower_id,
                        @AuthenticationPrincipal JwtUserDetails jwtUserDetails){
