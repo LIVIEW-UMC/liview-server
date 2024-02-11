@@ -11,7 +11,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import umc.liview.common.utils.logger.RequestLogger;
 import umc.liview.common.utils.logger.ResponseLogger;
 
-@Slf4j
 @RequiredArgsConstructor
 @Component
 public class LoggingInterceptor implements HandlerInterceptor {
@@ -20,17 +19,21 @@ public class LoggingInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 @Nullable Exception ex) {
 
-        // Avoid Wrapping Duplicated
-        if (request.getClass().getName().contains("SecurityContextHolderAwareRequestWrapper"))
-            return;
-
         // Request Logging
-        RequestLogger.logging(request);
+        if (!verifyMultipartFileContained(request)) {
+            RequestLogger.logging(request);
+        } else {
+            RequestLogger.loggingMultipartRequest(request);
+        }
 
         // Successful Response Logging
         if (isSuccess(response.getStatus())) {
             ResponseLogger.logging(response);
         }
+    }
+
+    private boolean verifyMultipartFileContained(HttpServletRequest request) {
+        return (boolean) request.getAttribute("isMultipartFile");
     }
 
     private boolean isSuccess(int responseStatus) {

@@ -15,7 +15,6 @@ import umc.liview.config.jwt.utils.JwtVerifier;
 
 import java.io.IOException;
 
-@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -32,7 +31,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String token = authorizationHeader.substring(7);
             // Jwt 유효성 검증
             if (jwtVerifier.validateToken(token, request)) {
-                Long userId = jwtExtractor.getUserId(token);
+                Long userId = jwtExtractor.extractUserId(token);
                 JwtUserDetails userDetails = new JwtUserDetails(userId);
 
                 // Request 에 접근권한 설정

@@ -34,14 +34,16 @@ public class TourService {
     private final UserRepository userRepository;
 
     //임시 저장 일정 간단 조회
-
     public List<Tour> getAllIncompletedTour(Long userId){
         User user = userRepository.getReferenceById(userId);
-        List<Tour> tourList = tourRepository.findAllByUserAndCompleteStatus(user,Tour.CompleteStatus.INCOMPLETE);
-
-        return tourList;
+        return tourRepository.findAllByUserAndCompleteStatus(user,Tour.CompleteStatus.INCOMPLETE);
     }
 
+    public List<Tour> getAllCompletedTour(Long userId){
+        User user = userRepository.getReferenceById(userId);
+        return tourRepository.findAllByUserAndCompleteStatus(user,Tour.CompleteStatus.COMPLETE);
+
+    }
 
 
     //폴더 저장 로직!
@@ -122,7 +124,6 @@ public class TourService {
             tourImageRepository.save(tourImages);
         }
 
-
     //임시저장 -> 생성
         if (tourRequestDTO.getIsClassfied().equals("true") && tourRequestDTO.getCompleteStatus().equals(Tour.CompleteStatus.COMPLETE)){
             Optional<Folder> folder = folderRepository.findById(tourRequestDTO.getFolderId());
@@ -171,6 +172,18 @@ public class TourService {
     @Transactional
     public  Tour getDetailIncompletedTourService(Long tourId) {
         return tourRepository.getReferenceById(tourId);
+    }
+
+    @Transactional
+    public void deleteTourService(Long tourId) {
+        tourRepository.deleteById(tourId);
+
+        //투어와 관련된 모든 폴더 저장 정보 삭제
+        List<StoredTours> storedTours = storedToursRepository.findAllByTourId(tourId);
+        if (!storedTours.isEmpty()) { //저장된 폴더가 있다면 폴더안의 투어 정보도 삭제
+            storedToursRepository.deleteAllByTourId(tourId);
+        }
+
     }
 
 }

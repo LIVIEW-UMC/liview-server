@@ -25,7 +25,8 @@ public class AuthService {
     @Transactional
     public TokenResponse reissue(TokenReissueCommand tokenReissueCommand) {
         // 토큰 -> user's id
-        Long userId = jwtExtractor.getUserId(tokenReissueCommand.accessToken());
+        Long userId = jwtExtractor.extractUserId(tokenReissueCommand.accessToken());
+        System.out.println("userId is " + userId);
         // 리프레쉬 토큰 검증
         jwtVerifier.verifyRefreshToken(userId, tokenReissueCommand.refreshToken());
         // 토큰 재발급
@@ -48,10 +49,5 @@ public class AuthService {
     private User findUser(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND, userId));
-    }
-
-    private User findUserWithEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND, "일치하는 이메일의 유저가 없습니다."));
     }
 }

@@ -66,7 +66,7 @@ public class Tour extends Serializers.Base {
     private Post post;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "tour")
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private List<TourImages> tourImages = new ArrayList<>();
 
     @JsonIgnore

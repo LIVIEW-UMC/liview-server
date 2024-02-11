@@ -12,7 +12,6 @@ import umc.liview.exception.ErrorResponse;
 
 import java.io.IOException;
 
-@Slf4j
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override

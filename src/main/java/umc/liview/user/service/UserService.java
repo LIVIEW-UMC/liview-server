@@ -4,11 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.liview.exception.NotFoundException;
+import umc.liview.exception.code.ErrorCode;
+import umc.liview.user.converter.UserConverter;
 import umc.liview.user.domain.Follow;
 import umc.liview.user.domain.FollowRepositiory;
 import umc.liview.user.domain.User;
 import umc.liview.user.domain.UserRepository;
 import umc.liview.user.dto.UserDTO;
+import umc.liview.user.dto.UserRequestDTO;
+import umc.liview.user.dto.UserResponseDTO;
 
 import java.util.Optional;
 
@@ -28,13 +33,7 @@ public class UserService {
     // 팔로우 레파지토리에
     // 이 (유저, 팔로워)의 쌍을 찾아야함. 어캐하지  ?딜리트 하면 될 거 같은데
 
-    @Transactional
-    public void join(){
-        User user = User.builder()
-                .build();
 
-        userRepository.save(user);
-    }
     @Transactional
     public void followUser(Long followerId, Long userId) {
 
@@ -59,6 +58,66 @@ public class UserService {
             followRepository.save(follow);
 
         }
+    }
+
+
+    @Transactional
+    public UserResponseDTO.SimpleProfile getSimpleProfile(Long userId){
+        User userById = getUserById(userId);
+        Long follower = getFollower(userId);
+        Long following = getFollowing(userId);
+        return UserConverter.toSimpleProfile(userById, follower, following);
+    }
+
+    @Transactional
+    public UserResponseDTO.UserProfile getUserProfile(Long userId){
+        User userById = getUserById(userId);
+        return UserConverter.toUserProfile(userById);
+    }
+
+    @Transactional
+    public void putUserProfile(UserRequestDTO.PutUserProfile userProfile){
+        User userById = getUserById(userProfile.getUserId());
+        userById.modifyUserProfile(userProfile);
+    }
+
+    @Transactional
+    public UserResponseDTO.UserPrivacy getPrivacyInfo(Long userId){
+        User userById = getUserById(userId);
+        return UserConverter.toUserPrivacy(userById);
+    }
+
+    @Transactional
+    public void patchEmailPrivacy(UserRequestDTO.UserId userId){
+        User userById = getUserById(userId.getUserId());
+        userById.getPrivacyStatus().handleEmailPrivacy();
+    }
+
+    @Transactional
+    public void patchBoardPrivacy(UserRequestDTO.UserId userId){
+        User userById = getUserById(userId.getUserId());
+        userById.getPrivacyStatus().handleBoardPrivacy();
+    }
+
+    @Transactional
+    public void deleteUser(UserRequestDTO.UserId userId){
+        User userById = getUserById(userId.getUserId());
+        userRepository.delete(userById);
+    }
+
+    private User getUserById(Long userId){
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND, userId));
+    }
+
+    private Long getFollower(Long userId){
+        Optional<Long> opFollower = followRepository.countFollowByUserId(userId);
+        return opFollower.orElseGet(() -> 0L);
+    }
+
+    private Long getFollowing(Long userId){
+        Optional<Long> opFollowing = followRepository.countFollowByFollowerId(userId);
+        return opFollowing.orElseGet(() -> 0L);
     }
 
 }

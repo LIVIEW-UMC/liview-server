@@ -24,6 +24,16 @@ public class RequestLogger {
         log.info(logBuilder.toString());
     }
 
+    // Avoid Multipart Request
+    public static void loggingMultipartRequest(HttpServletRequest request) {
+        StringBuilder logBuilder = new StringBuilder();
+        logBuilder.append(getLoggingStructure());
+        logBuilder.append(getRequestURI(request)).append("\n");
+        logBuilder.append("[Request Headers] : ").append(parsingHeaders(request)).append("\n");
+        logBuilder.append("[Request Body] : This request includes Multipart Files").append("\n");
+        log.info(logBuilder.toString());
+    }
+
     // Logging Requested URI
     private static String getRequestURI(HttpServletRequest request) {
         String httpMethod = "[HTTP Method] : " + request.getMethod();
