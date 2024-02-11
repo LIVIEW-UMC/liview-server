@@ -17,7 +17,6 @@ import java.util.Map;
 
 import static umc.liview.user.domain.User.*;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuthLoader implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {

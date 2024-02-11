@@ -9,8 +9,7 @@ import umc.liview.exception.ErrorResponse;
 
 import java.io.IOException;
 
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
 
 @Getter
 @AllArgsConstructor
@@ -19,7 +18,8 @@ public enum JwtException {
     WRONG_TOKEN(UNAUTHORIZED, "유효하지 않은 토큰", "AUTH-002"),
     UNSUPPORTED_TOKEN(UNAUTHORIZED, "지원하지 않는 토큰 형식", "AUTH-003"),
     EMPTY_TOKEN(UNAUTHORIZED, "토큰이 없음", "AUTH-004"),
-    ACCESS_DENIED(FORBIDDEN, "권한이 없음", "AUTH_005"),;
+    ACCESS_DENIED(FORBIDDEN, "권한이 없음", "AUTH_005"),
+    UNKNOWN_ERROR(SERVICE_UNAVAILABLE, "알수 없는 에러", "AUTH-006");
 
     private final HttpStatus status;
     private final String message;
