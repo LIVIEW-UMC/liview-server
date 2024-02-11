@@ -36,7 +36,7 @@ public class WebSecurityConfig {
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAccessDeniedHandler accessDeniedHandler;
 
-    private static final String[] AUTH_WHITELIST = {"/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**", "/login", "/oauth2/**", "/", "/favicon.ico"};
+    private static final String[] AUTH_WHITELIST = {"/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**", "/login", "/oauth2/**", "/", "/favicon.ico" };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
