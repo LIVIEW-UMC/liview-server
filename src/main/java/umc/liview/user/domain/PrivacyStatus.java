@@ -14,4 +14,11 @@ public class PrivacyStatus {
     private boolean isInActivated;
     @Column(name = "tours_AutoPosted")
     private boolean toursAutoPosted;
+
+    public void handleEmailPrivacy(){
+        this.isInActivated = !this.isInActivated;
+    }
+    public void handleBoardPrivacy(){
+        this.toursAutoPosted = !this.toursAutoPosted;
+    }
 }
