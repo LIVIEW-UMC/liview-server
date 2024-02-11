@@ -2,6 +2,7 @@ package umc.liview.tour.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import umc.liview.config.auth.JwtUserDetails;
@@ -23,6 +24,7 @@ public class TourController {
     private final TourService tourservice;
     private final TourImageService tourImageService;
     private final TagService tagService;
+
     // 일정 생성
     @PostMapping(value = "/tours")
     public void makeTourController(

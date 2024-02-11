@@ -33,6 +33,9 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "activation_status")
     private ActivationStatus activationStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private Role role;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
@@ -58,6 +61,7 @@ public class User extends BaseTimeEntity {
         introduction = "";
         privacyStatus = new PrivacyStatus();
         activationStatus = ActivationStatus.INACTIVATED;
+        role = Role.USER;
     }
 
     @Getter
@@ -78,8 +82,8 @@ public class User extends BaseTimeEntity {
         private final String value;
     }
 
-    public void toggleActivationStatus(){
-        if(activationStatus == ActivationStatus.ACTIVATED){
+    public void toggleActivationStatus() {
+        if (activationStatus == ActivationStatus.ACTIVATED) {
             activationStatus = ActivationStatus.INACTIVATED;
         } else {
             activationStatus = ActivationStatus.ACTIVATED;

@@ -6,6 +6,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -38,14 +39,10 @@ public class JwtVerifier {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+        } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException | SignatureException e) {
             setAttribute(request, WRONG_TOKEN);
         } catch (ExpiredJwtException e) {
             setAttribute(request, EXPIRED_TOKEN);
-        } catch (UnsupportedJwtException e) {
-            setAttribute(request, UNSUPPORTED_TOKEN);
-        } catch (IllegalArgumentException e) {
-            setAttribute(request, EMPTY_TOKEN);
         }
         return false;
     }

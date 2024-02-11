@@ -21,7 +21,7 @@ public class JwtExtractor {
     }
 
     // Token 에서 User's Id 추출
-    public Long getUserId(String token) {
+    public Long extractUserId(String token) {
         return parseClaims(token).get("userId", Long.class);
     }
 

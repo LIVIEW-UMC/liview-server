@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -16,21 +17,32 @@ public class CachingRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
-        // Multipart Type 이면 Skip
-        if (isMultipartRequest(request)) {
-            filterChain.doFilter(request, response);
+        // Avoid MultipartFile Caching
+        if (verifyMultipartFileIncluded(request)) {
+            filterChain.doFilter(request, wrapResponse(response));
             return;
         }
-        // Wrapping
-        ContentCachingRequestWrapper wrappingRequest = new ContentCachingRequestWrapper(request);
-        ContentCachingResponseWrapper wrappingResponse = new ContentCachingResponseWrapper(response);
-
-        filterChain.doFilter(wrappingRequest, wrappingResponse);
-        wrappingResponse.copyBodyToResponse();
+        // Caching Request&Response
+        filterChain.doFilter(wrapRequest(request), wrapResponse(response));
     }
 
-    private boolean isMultipartRequest(HttpServletRequest request) {
-        return request.getContentType() != null && request.getContentType().startsWith("multipart");
+    private ContentCachingRequestWrapper wrapRequest(HttpServletRequest request) {
+        return new ContentCachingRequestWrapper(request);
+    }
+
+    private ContentCachingResponseWrapper wrapResponse(HttpServletResponse response) throws IOException {
+        ContentCachingResponseWrapper wrappingResponse = new ContentCachingResponseWrapper(response);
+        wrappingResponse.copyBodyToResponse();
+        return wrappingResponse;
+    }
+
+    private boolean verifyMultipartFileIncluded(HttpServletRequest request) {
+        if (request.getContentType() != null && request.getContentType().contains("multipart")) {
+            request.setAttribute("isMultipartFile", true);
+            return true;
+        } else {
+            request.setAttribute("isMultipartFile", false);
+            return false;
+        }
     }
 }
