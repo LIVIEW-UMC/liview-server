@@ -1,11 +1,10 @@
-package umc.liview.community;
+package umc.liview.community.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import umc.liview.common.basetime.BaseTimeEntity;
 import umc.liview.tour.domain.Tour;
+import umc.liview.user.domain.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,9 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Post {
+@Builder
+@AllArgsConstructor
+public class Post extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,4 +41,15 @@ public class Post {
 
         private final String status;
     }
+
+
+    public void toggleActivationStatus() {
+        if (postStatus == PostStatus.PUBLIC) {
+            postStatus = PostStatus.PRIVATE;
+        } else {
+            postStatus = PostStatus.PUBLIC;
+        }
+    }
+
+
 }
