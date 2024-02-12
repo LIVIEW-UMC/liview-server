@@ -15,7 +15,6 @@ public class FolderDTO {
     private String name;
     private Long userId;
     private Folder.Owner owner;
-    private Folder.ActivationStatus activationStatus;
 
 
     public static FolderDTO toFolderDTO(Folder folder){
@@ -23,7 +22,6 @@ public class FolderDTO {
                 .id(folder.getId())
                 .name(folder.getName())
                 .owner(folder.getOwner())
-                .activationStatus(folder.getActivationStatus())
                 .build();
     }
 

@@ -42,23 +42,7 @@ public class Folder extends BaseTimeEntity {
         MINE("나의_일정"),
         OTHERS("다른_회원_일정"),
         ;
-
         private final String ownerStatus;
-    }
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "activation_status")
-    private ActivationStatus activationStatus;
-
-
-    @Getter
-    @RequiredArgsConstructor
-    public enum ActivationStatus {
-        ACTIVATED("활성화"),
-        INACTIVATED("비활성화"),
-        ;
-
-        private final String activeStatus;
     }
 
     public Folder changeName(String name){
@@ -66,22 +50,8 @@ public class Folder extends BaseTimeEntity {
         return this;
     }
 
-    public void toggleActivationStatus(){
-        if(this.getActivationStatus() == ActivationStatus.ACTIVATED){
-            this.activationStatus = ActivationStatus.INACTIVATED ;
-        }
-        else{
-            this.activationStatus = ActivationStatus.ACTIVATED ;
-        }
-    }
-        public static Folder toFolderEntity(FolderDTO folderDTO){
-        return Folder.builder()
-                .name(folderDTO.getName())
-                .owner(folderDTO.getOwner())
 
-                .activationStatus(folderDTO.getActivationStatus())
-                .build();
-    }
+
 
 
 }

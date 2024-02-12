@@ -47,7 +47,6 @@ public class FolderService {
                 .user(user)
                 .name(folderDTO.getName())
                 .owner(folderDTO.getOwner())
-                .activationStatus(folderDTO.getActivationStatus())
                 .build();
 
         folderRepository.save(folder);

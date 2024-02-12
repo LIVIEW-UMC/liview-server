@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.liview.common.basetime.BaseTimeEntity;
-import umc.liview.community.Comments;
+import umc.liview.community.domain.Comments;
 import umc.liview.tour.domain.Tour;
 import umc.liview.user.dto.UserRequestDTO;
 
