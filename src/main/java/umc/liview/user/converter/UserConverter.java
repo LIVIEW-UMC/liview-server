@@ -24,7 +24,7 @@ public class UserConverter {
 
     public static UserResponseDTO.UserPrivacy toUserPrivacy(User user){
         return UserResponseDTO.UserPrivacy.builder()
-                .isInActivated(user.getPrivacyStatus().isInActivated())
+                .isInActivated(user.getPrivacyStatus().isEmailReceptionStatus())
                 .toursAutoPosted(user.getPrivacyStatus().isToursAutoPosted())
                 .build();
     }

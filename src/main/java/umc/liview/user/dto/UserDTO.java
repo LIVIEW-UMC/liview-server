@@ -12,7 +12,6 @@ import umc.liview.user.domain.User;
 @Setter
 @NoArgsConstructor // 기본생성자
 @AllArgsConstructor // 모든 필드를 매개변수로 하는 생성자
-
 public class UserDTO {
 
     private long id;
@@ -20,7 +19,6 @@ public class UserDTO {
     private String email;
     private String introduction;
     private PrivacyStatus privacyStatus;
-    private User.ActivationStatus activationStatus;
 
     public static UserDTO toUserDTO(User user) {
 
@@ -29,8 +27,6 @@ public class UserDTO {
         userDTO.setName(user.getName());
         userDTO.setIntroduction(user.getIntroduction());
         userDTO.setPrivacyStatus(user.getPrivacyStatus());
-        userDTO.setActivationStatus(user.getActivationStatus());
-
         return userDTO;
     }
 }
