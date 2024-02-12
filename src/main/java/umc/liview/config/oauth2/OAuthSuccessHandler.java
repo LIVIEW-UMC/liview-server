@@ -62,7 +62,7 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         //13.124.86.122
         return UriComponentsBuilder.newInstance()
-                .scheme("http")
+                .scheme("https")
                 .host("localhost")
                 .path("/loginSuccess")
                 .queryParams(queryParams)
