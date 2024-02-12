@@ -32,9 +32,6 @@ public class User extends BaseTimeEntity {
     @Embedded
     private PrivacyStatus privacyStatus;
     @Enumerated(EnumType.STRING)
-    @Column(name = "activation_status")
-    private ActivationStatus activationStatus;
-    @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
 
@@ -61,17 +58,7 @@ public class User extends BaseTimeEntity {
         this.imgUrl = imgUrl;
         introduction = "";
         privacyStatus = new PrivacyStatus();
-        activationStatus = ActivationStatus.INACTIVATED;
         role = Role.USER;
-    }
-
-    @Getter
-    @RequiredArgsConstructor
-    public enum ActivationStatus {
-        ACTIVATED("활성화"),
-        INACTIVATED("비활성화"),
-        ;
-        private final String status;
     }
 
     @Getter
@@ -81,14 +68,6 @@ public class User extends BaseTimeEntity {
         ADMIN("ROLE_ADMIN");
 
         private final String value;
-    }
-
-    public void toggleActivationStatus() {
-        if (activationStatus == ActivationStatus.ACTIVATED) {
-            activationStatus = ActivationStatus.INACTIVATED;
-        } else {
-            activationStatus = ActivationStatus.ACTIVATED;
-        }
     }
 
     public void modifyUserProfile(UserRequestDTO.PutUserProfile userProfile){

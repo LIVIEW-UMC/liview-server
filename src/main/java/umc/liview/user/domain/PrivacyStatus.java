@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class PrivacyStatus {
-    @Column(name = "is_InActivated")
-    private boolean isInActivated;
+    @Column(name = "enmail_reception_status")
+    private boolean emailReceptionStatus;
     @Column(name = "tours_AutoPosted")
     private boolean toursAutoPosted;
 
     public void handleEmailPrivacy(){
-        this.isInActivated = !this.isInActivated;
+        emailReceptionStatus = !emailReceptionStatus;
     }
     public void handleBoardPrivacy(){
-        this.toursAutoPosted = !this.toursAutoPosted;
+        toursAutoPosted = !toursAutoPosted;
     }
 }
