@@ -6,11 +6,9 @@ import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import umc.liview.community.Post;
+import umc.liview.community.domain.Post;
 import umc.liview.tour.dto.TourRequestDTO;
-import umc.liview.user.domain.Folder;
 import umc.liview.user.domain.User;
 
 import java.time.LocalDateTime;
@@ -56,12 +54,11 @@ public class Tour extends Serializers.Base {
         private final String completeStatus;
     }
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private Post post;
 
@@ -87,6 +84,9 @@ public class Tour extends Serializers.Base {
 
     }
 
+    public void setPost(Post post){
+        this.post = post;
+    }
     public void setUser(User user){
         this.user = user;
     }

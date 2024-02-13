@@ -40,7 +40,7 @@ public class TourImages extends BaseTimeEntity {
     private boolean isThumbnail;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) //일정 삭제시 이미지도 자동으로 삭제 되도록
+    @ManyToOne(fetch = FetchType.LAZY) //일정 삭제시 이미지도 자동으로 삭제 되도록
     @JoinColumn(name = "tour_id")
     private Tour tour;
 

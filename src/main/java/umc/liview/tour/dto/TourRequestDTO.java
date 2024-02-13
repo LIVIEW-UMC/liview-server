@@ -24,8 +24,5 @@ public class TourRequestDTO {
     private String isClassfied;
     private Long tourId;
     private Long folderId;
-    private User user;
-
-
 
 }
