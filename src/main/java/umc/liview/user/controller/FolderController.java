@@ -29,23 +29,12 @@ public class FolderController {
     //폴더 상세 조회
     @GetMapping("/folder/detail/{folderId}")
     public List<SimpleTourDTO> getFolderDetailController(
-            @PathVariable Long folderId
+            @PathVariable Long folderId,
+            @AuthenticationPrincipal JwtUserDetails jwtUserDetails
     ){
+        Long userId = jwtUserDetails.getUserId();
         List<Tour> tourList = folderService.getFolderDetailService(folderId);
-        List<SimpleTourDTO> simpleTourDTOList = new ArrayList<>();
-
-
-        if (!tourList.isEmpty()) {
-            for(Tour tour : tourList){
-                simpleTourDTOList.add(
-                        SimpleTourDTO.builder()
-                                .tourId(tour.getId())
-                                .title(tour.getTitle())
-                                .localDateTime(tour.getCreatedAt())
-                                .imageURL(tourImageService.getThumbnail(tour))
-                                .build());
-            }
-        }
+        List<SimpleTourDTO> simpleTourDTOList = tourService.putImage(tourList);
         return simpleTourDTOList;
 
     }

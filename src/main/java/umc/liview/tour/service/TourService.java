@@ -191,11 +191,6 @@ public class TourService {
     }
 
     @Transactional
-    public  Tour getDetailIncompletedTourService(Long tourId) {
-        return tourRepository.getReferenceById(tourId);
-    }
-
-    @Transactional
     public void deleteTourService(Long tourId) {
         tourRepository.deleteById(tourId);
 

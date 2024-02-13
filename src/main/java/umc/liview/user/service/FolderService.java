@@ -3,6 +3,7 @@ package umc.liview.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.liview.community.domain.Post;
 import umc.liview.tour.domain.Tour;
 import umc.liview.tour.repository.TourRepository;
 import umc.liview.tour.service.TourService;
@@ -23,14 +24,31 @@ public class FolderService {
     //이건 포스트가 만들어 져야 할 수 있음
     public List<Tour> getFolderDetailService(Long folderId) {
 
-        Folder folder =folderRepository.getReferenceById(folderId);
-        List<StoredTours> storedToursList = folder.getStoredTours();
+        Optional<Folder> tempFolder = folderRepository.findById(folderId);
         List<Tour> tourList = new ArrayList<>();
 
-        for (StoredTours storedTours : storedToursList){
-            Tour tempTour = tourRepository.getReferenceById(storedTours.getTourId());
-            //이거 포스트 끝나고 마무리하자  투어 찾았고 포스트 찾아서 포스트의 공개여부를 확인하고 공개라면 tourList에 담아서 리턴해주면 될듯
-            // tempTour.
+        if (tempFolder.isPresent()) {
+            Folder folder = tempFolder.get();
+            List<StoredTours> storedToursList = folder.getStoredTours();
+
+            if (folder.getOwner() == Folder.Owner.OTHERS) {
+                for (StoredTours storedTours : storedToursList) {
+                    Tour tempTour = tourRepository.getReferenceById(storedTours.getTourId());
+                    Post post = tempTour.getPost();
+
+                    if (post.getPostStatus() == Post.PostStatus.PUBLIC) {
+                        tourList.add(tempTour);
+                    }
+
+                }
+
+            }
+            else{
+                for (StoredTours storedTours : storedToursList) {
+                    Tour tempTour = tourRepository.getReferenceById(storedTours.getTourId());
+                    tourList.add(tempTour);
+                }
+            }
         }
         return tourList;
     }
