@@ -1,8 +1,10 @@
 package umc.liview.auth.presentation;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +25,7 @@ public class AuthController {
 
     @GetMapping("/google-login")
     public void login(HttpServletResponse response) throws IOException {
-        response.sendRedirect("http://localhost:8080/oauth2/authorization/google");
+        response.sendRedirect("https://jin-myserver.shop/login/oauth2/code/google");
     }
 
     @PostMapping("/auth/reissue")
