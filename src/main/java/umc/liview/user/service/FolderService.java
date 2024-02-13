@@ -22,7 +22,7 @@ public class FolderService {
     private final TourService tourService;
     private final StoredToursRepository storedToursRepository;
     //이건 포스트가 만들어 져야 할 수 있음
-    public List<Tour> getFolderDetailService(Long folderId) {
+    public List<Tour> getMyFolderDetailService(Long folderId) {
 
         Optional<Folder> tempFolder = folderRepository.findById(folderId);
         List<Tour> tourList = new ArrayList<>();
@@ -53,6 +53,30 @@ public class FolderService {
         return tourList;
     }
 
+    public List<Tour> getOtherFolderDetailService(Long folderId) {
+
+        Optional<Folder> tempFolder = folderRepository.findById(folderId);
+        List<Tour> tourList = new ArrayList<>();
+
+        if (tempFolder.isPresent()) {
+            Folder folder = tempFolder.get();
+            List<StoredTours> storedToursList = folder.getStoredTours();
+
+                for (StoredTours storedTours : storedToursList) {
+                    Tour tempTour = tourRepository.getReferenceById(storedTours.getTourId());
+                    Post post = tempTour.getPost();
+
+                    if (post.getPostStatus() == Post.PostStatus.PUBLIC) {
+                        tourList.add(tempTour);
+                    }
+
+
+
+               }
+
+        }
+        return tourList;
+    }
 
 
 
