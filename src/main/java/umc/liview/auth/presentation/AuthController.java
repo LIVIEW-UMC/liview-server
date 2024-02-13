@@ -1,8 +1,10 @@
 package umc.liview.auth.presentation;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +14,8 @@ import umc.liview.auth.presentation.dto.request.TokenReissueDto;
 import umc.liview.auth.presentation.dto.response.TokenResponse;
 import umc.liview.config.auth.JwtUserDetails;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
@@ -19,7 +23,12 @@ public class AuthController {
     private final AuthService authService;
     private final UserDtoMapper mapper;
 
-    @PostMapping("/reissue")
+    @GetMapping("/google-login")
+    public void login(HttpServletResponse response) throws IOException {
+        response.sendRedirect("https://jin-myserver.shop/login/oauth2/code/google");
+    }
+
+    @PostMapping("/auth/reissue")
     public TokenResponse reissue(@Valid @RequestBody TokenReissueDto tokenReissueDto) {
         return authService.reissue(mapper.toCommand(tokenReissueDto));
     }
