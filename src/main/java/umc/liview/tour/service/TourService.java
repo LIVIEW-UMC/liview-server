@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.liview.community.domain.Post;
+import umc.liview.community.service.PostService;
 import umc.liview.config.s3.AmazonS3Manager;
 import umc.liview.tour.domain.Tag;
 import umc.liview.tour.domain.Tour;
 import umc.liview.tour.domain.TourImages;
 import umc.liview.tour.domain.TourTags;
 import umc.liview.tour.dto.ImageCreateDTO;
+import umc.liview.tour.dto.SimpleTourDTO;
 import umc.liview.tour.dto.TourRequestDTO;
 import umc.liview.tour.repository.TagRepository;
 import umc.liview.tour.repository.TourImageRepository;
@@ -17,6 +20,7 @@ import umc.liview.tour.repository.TourRepository;
 import umc.liview.tour.repository.TourTagsRepository;
 import umc.liview.user.domain.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +36,8 @@ public class TourService {
     private final StoredToursRepository storedToursRepository ;
     private final FolderRepository folderRepository;
     private final UserRepository userRepository;
+    private final PostService postService;
+    private final TourImageService tourImageService;
 
     //임시 저장 일정 간단 조회
     public List<Tour> getAllIncompletedTour(Long userId){
@@ -39,6 +45,8 @@ public class TourService {
         return tourRepository.findAllByUserAndCompleteStatus(user,Tour.CompleteStatus.INCOMPLETE);
     }
 
+
+    //완성 일정 간단 조회
     public List<Tour> getAllCompletedTour(Long userId){
         User user = userRepository.getReferenceById(userId);
         return tourRepository.findAllByUserAndCompleteStatus(user,Tour.CompleteStatus.COMPLETE);
@@ -94,6 +102,7 @@ public class TourService {
         User user = userRepository.getReferenceById(userId);
 
 
+
     if (tourRequestDTO.getTourId() != null){
         Optional<Tour> tourTemp = tourRepository.findById(tourRequestDTO.getTourId());
         Tour tour = tourTemp.get();
@@ -102,6 +111,13 @@ public class TourService {
         tour.changeContent(tourRequestDTO.getContents());
         tour.changeTitle(tourRequestDTO.getTitle());
         tour.changeCompleteStatus(tourRequestDTO.getCompleteStatus());
+
+
+        if (tourRequestDTO.getCompleteStatus().equals(Tour.CompleteStatus.COMPLETE)) {
+            Post post = postService.createPost(userId);
+            tour.setPost(post);
+        }
+
         //해시태그 수정도 해야 해
         deleteHashtag(tour);
         tourRepository.save(tour);
@@ -128,14 +144,21 @@ public class TourService {
         if (tourRequestDTO.getIsClassfied().equals("true") && tourRequestDTO.getCompleteStatus().equals(Tour.CompleteStatus.COMPLETE)){
             Optional<Folder> folder = folderRepository.findById(tourRequestDTO.getFolderId());
             classfiedTour(tour,folder.get());
-
         }
+
+
     }
     else{ //바로 생성
 
     Tour tour = Tour.toTourEntity(tourRequestDTO);
     tour.setUser(user);
+
+    if (tourRequestDTO.getCompleteStatus().equals(Tour.CompleteStatus.COMPLETE)) {
+        Post post = postService.createPost(userId);
+        tour.setPost(post);
+    }
     tourRepository.save(tour);
+
     createHashtag(tour,tourRequestDTO.getHashtag());
 
     // 투어 생성 -> for each 이미지 업로드 => Tourimage생성
@@ -162,15 +185,8 @@ public class TourService {
 
     }
     }
-
-
     @Transactional
     public Tour getTour(Long tourId) {
-        return tourRepository.getReferenceById(tourId);
-    }
-
-    @Transactional
-    public  Tour getDetailIncompletedTourService(Long tourId) {
         return tourRepository.getReferenceById(tourId);
     }
 
@@ -186,4 +202,20 @@ public class TourService {
 
     }
 
+    @Transactional
+    public List<SimpleTourDTO> putImage(List<Tour> tourList){
+        List<SimpleTourDTO> simpleTourDTOList = new ArrayList<>();
+        if (!tourList.isEmpty()) {
+            for(Tour tour : tourList){
+                simpleTourDTOList.add(
+                        SimpleTourDTO.builder()
+                                .tourId(tour.getId())
+                                .title(tour.getTitle())
+                                .localDateTime(tour.getCreatedAt())
+                                .imageURL(tourImageService.getThumbnail(tour))
+                                .build());
+            }
+        }
+        return simpleTourDTOList;
+    }
 }

@@ -29,23 +29,12 @@ public class FolderController {
     //폴더 상세 조회
     @GetMapping("/folder/detail/{folderId}")
     public List<SimpleTourDTO> getFolderDetailController(
-            @PathVariable Long folderId
+            @PathVariable Long folderId,
+            @AuthenticationPrincipal JwtUserDetails jwtUserDetails
     ){
+        Long userId = jwtUserDetails.getUserId();
         List<Tour> tourList = folderService.getFolderDetailService(folderId);
-        List<SimpleTourDTO> simpleTourDTOList = new ArrayList<>();
-
-
-        if (!tourList.isEmpty()) {
-            for(Tour tour : tourList){
-                simpleTourDTOList.add(
-                        SimpleTourDTO.builder()
-                                .tourId(tour.getId())
-                                .title(tour.getTitle())
-                                .localDateTime(tour.getCreatedAt())
-                                .imageURL(tourImageService.getThumbnail(tour))
-                                .build());
-            }
-        }
+        List<SimpleTourDTO> simpleTourDTOList = tourService.putImage(tourList);
         return simpleTourDTOList;
 
     }
@@ -76,14 +65,6 @@ public class FolderController {
     }
 
 
-
-
-//    Refactor 1. createFolder   인증후 user_id 넣어줘야 함. 현재 NULL
-//             2. elif 밑에 else로 예외처리 해줘야함. False 같은 거 들어오면 예외로 해야해
-//             3. 같은 유저가 같은 이름이 중복되면 안된다고 예외처리도 해줘야 해. 안했을 시에 삭제,조회 시에 문제 생길 거 같아
-//             4. 유저가 없으면 ? 레파지토리에서 에러 날리는 거 예외처리도 해줘야해
-
-
     //폴더 생성
     @PostMapping("/folder")
     public void createFolderController(
@@ -100,7 +81,6 @@ public class FolderController {
                     .name(tempfolderDTO.getName())
                     .userId(userId)
                     .owner(Folder.Owner.MINE)
-                    .activationStatus(Folder.ActivationStatus.ACTIVATED)
                     .build();
 
             folderService.createFolder(folderDTO);
@@ -113,7 +93,6 @@ public class FolderController {
                     .name(tempfolderDTO.getName())
                     .userId(userId)
                     .owner(Folder.Owner.OTHERS)
-                    .activationStatus(Folder.ActivationStatus.ACTIVATED)
                     .build();
 
             folderService.createFolder(folderDTO);

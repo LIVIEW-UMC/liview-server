@@ -10,8 +10,10 @@ import java.util.Optional;
 
 public interface TourRepository extends JpaRepository<Tour,Long> {
 
-//
-//    @Query("select t from Tour t join fetch t.tourImages ")
-//    List<Tour> findByTourId(Long tourId);
+
     List<Tour> findAllByUserAndCompleteStatus(User user, Tour.CompleteStatus completeStatus);
+
+    List<Tour> findAllByUserIdAndCompleteStatusAndIsClassified(Long userId, Tour.CompleteStatus completeStatus , boolean isClassfied);
+
+
 }
