@@ -47,7 +47,6 @@ public class FolderController {
         Long userId = jwtUserDetails.getUserId();
         return folderService.getMyFolder(userId, owner);
     }
-
     @PostMapping("/folder/{folderId}/{tourId}")
     public void addTourController(
             @PathVariable Long folderId,
