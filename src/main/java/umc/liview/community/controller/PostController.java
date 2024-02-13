@@ -3,14 +3,16 @@ package umc.liview.community.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import umc.liview.community.domain.Post;
 import umc.liview.community.service.PostService;
 import umc.liview.config.auth.JwtUserDetails;
 import umc.liview.tour.domain.Tour;
+import umc.liview.tour.domain.TourImages;
+import umc.liview.tour.dto.DetailIncompletedTourDTO;
 import umc.liview.tour.dto.SimpleTourDTO;
+import umc.liview.tour.service.TagService;
+import umc.liview.tour.service.TourImageService;
 import umc.liview.tour.service.TourService;
 
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ public class PostController {
 
     private final PostService postService;
     private final TourService tourService;
+    private final TourImageService tourImageService;
+    private final TagService tagService;
     // 게시글 공개, 비공개 수정
     @PatchMapping("/community/post/{postId}")
     public void togglePostController(@PathVariable Long postId){ postService.togglePostService(postId);}
@@ -50,5 +54,25 @@ public class PostController {
 
     }
 
+    @GetMapping("/community/post")
+    public DetailIncompletedTourDTO getDetailPostController(
+            @RequestParam Long tourId){
+
+        Tour tour = tourService.getTour(tourId);
+
+        Post post = tour.getPost();
+        List<TourImages> tourImagesList = new ArrayList<>();
+        tourImagesList.add(tourImageService.getThumbnailDetail(tourId));
+        tourImagesList.addAll(tourImageService.getNotThumbailDetail(tourId));
+        postService.increaseViewCount(post);
+
+        return DetailIncompletedTourDTO.builder()
+                .tourId(tourId)
+                .contents(tour.getContents())
+                .title(tour.getTitle())
+                .hashtag(tagService.getHashtag(tourId))
+                .imgList(tourImagesList)
+                .build();
+    }
 
 }
