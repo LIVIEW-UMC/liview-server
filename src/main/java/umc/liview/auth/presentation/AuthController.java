@@ -25,7 +25,7 @@ public class AuthController {
 
     @GetMapping("/google-login")
     public void login(HttpServletResponse response) throws IOException {
-        response.sendRedirect("https://jin-myserver.shop/login/oauth2/code/google");
+        response.sendRedirect("https://jin-myserver.shop/oauth2/authorization/google");
     }
 
     @PostMapping("/auth/reissue")

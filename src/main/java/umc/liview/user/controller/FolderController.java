@@ -27,15 +27,26 @@ public class FolderController {
     private final TourService tourService;
 
     //폴더 상세 조회
-    @GetMapping("/folder/detail/{folderId}")
+    @GetMapping("/folder/detail/{folderId}/{userId}")
     public List<SimpleTourDTO> getFolderDetailController(
             @PathVariable Long folderId,
+            @PathVariable Long userId,
             @AuthenticationPrincipal JwtUserDetails jwtUserDetails
     ){
-        Long userId = jwtUserDetails.getUserId();
-        List<Tour> tourList = folderService.getFolderDetailService(folderId);
-        List<SimpleTourDTO> simpleTourDTOList = tourService.putImage(tourList);
-        return simpleTourDTOList;
+        Long myId = jwtUserDetails.getUserId();
+
+        if (myId.equals(userId)) {
+
+            List<Tour> tourList = folderService.getMyFolderDetailService(folderId);
+            List<SimpleTourDTO> simpleTourDTOList = tourService.putImage(tourList);
+            return simpleTourDTOList;
+
+        }
+        else {
+            List<Tour> tourList = folderService.getOtherFolderDetailService(folderId);
+            List<SimpleTourDTO> simpleTourDTOList = tourService.putImage(tourList);
+            return simpleTourDTOList;
+        }
 
     }
 
@@ -47,7 +58,6 @@ public class FolderController {
         Long userId = jwtUserDetails.getUserId();
         return folderService.getMyFolder(userId, owner);
     }
-
     @PostMapping("/folder/{folderId}/{tourId}")
     public void addTourController(
             @PathVariable Long folderId,
@@ -104,6 +114,7 @@ public class FolderController {
             @PathVariable("folder_Id") Long folderId) {
         folderService.deleteFolderService(folderId);
     }
+
 
     @PatchMapping("/folder/rename")
     public void renameFolderController(
