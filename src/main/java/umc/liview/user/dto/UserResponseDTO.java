@@ -12,7 +12,7 @@ public class UserResponseDTO {
     @AllArgsConstructor
     @Getter
     public static class SimpleProfile {
-        String path;
+        String url;
         String name;
         String email;
         Long follower;
@@ -24,7 +24,7 @@ public class UserResponseDTO {
     @AllArgsConstructor
     @Getter
     public static class UserProfile {
-        String path;
+        String imgUrl;
         String name;
         String email;
         String introduction;

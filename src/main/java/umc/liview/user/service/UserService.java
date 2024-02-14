@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import umc.liview.config.s3.AmazonS3Manager;
 import umc.liview.exception.NotFoundException;
 import umc.liview.exception.code.ErrorCode;
 import umc.liview.user.converter.UserConverter;
@@ -22,6 +24,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final FollowRepositiory followRepository;
+    private final AmazonS3Manager s3Manager;
 
     //Refactor
     //ServiceImpl 추가,DAO 추가, Autiowired로 레포지토리 의존성 주입,DataHandler ?
@@ -76,9 +79,15 @@ public class UserService {
     }
 
     @Transactional
-    public void putUserProfile(UserRequestDTO.PutUserProfile userProfile){
-        User userById = getUserById(userProfile.getUserId());
-        userById.modifyUserProfile(userProfile);
+    public void putUserProfile(Long userId, UserRequestDTO.PutUserProfile userProfile, MultipartFile file){
+        User userById = getUserById(userId);
+        if (!file.isEmpty()){
+            String imgURL = s3Manager.uploadFile(file);
+            userById.modifyUserProfile(userProfile, imgURL);
+        }
+        else{
+            userById.modifyUserProfile(userProfile);
+        }
     }
 
     @Transactional
@@ -88,20 +97,22 @@ public class UserService {
     }
 
     @Transactional
-    public void patchEmailPrivacy(UserRequestDTO.UserId userId){
-        User userById = getUserById(userId.getUserId());
+    public void patchEmailPrivacy(Long userId){
+        User userById = getUserById(userId);
         userById.getPrivacyStatus().handleEmailPrivacy();
     }
 
     @Transactional
-    public void patchBoardPrivacy(UserRequestDTO.UserId userId){
-        User userById = getUserById(userId.getUserId());
+    public void patchBoardPrivacy(Long userId){
+        User userById = getUserById(userId);
         userById.getPrivacyStatus().handleBoardPrivacy();
     }
 
     @Transactional
-    public void deleteUser(UserRequestDTO.UserId userId){
-        User userById = getUserById(userId.getUserId());
+    public void deleteUser(Long userId){
+        User userById = getUserById(userId);
+        followRepository.deleteAllByFollowerId(userId);
+        followRepository.deleteAllByUser(userById);
         userRepository.delete(userById);
     }
 

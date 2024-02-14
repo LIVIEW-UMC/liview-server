@@ -71,8 +71,11 @@ public class User extends BaseTimeEntity {
     }
 
     public void modifyUserProfile(UserRequestDTO.PutUserProfile userProfile){
-        this.name = userProfile.getName();
-        this.email = userProfile.getEmail();
+        this.introduction = userProfile.getIntroduction();
+    }
+
+    public void modifyUserProfile(UserRequestDTO.PutUserProfile userProfile, String imgUrl){
+        this.imgUrl = imgUrl;
         this.introduction = userProfile.getIntroduction();
     }
 }

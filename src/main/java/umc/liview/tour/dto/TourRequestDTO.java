@@ -1,5 +1,6 @@
 package umc.liview.tour.dto;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,5 +25,10 @@ public class TourRequestDTO {
     private String isClassfied;
     private Long tourId;
     private Long folderId;
+    private String size;
+    private String startDay;
+    private String endDay;
+
+    List<ImageMetadataDTO> imageMetadataDTOList;
 
 }

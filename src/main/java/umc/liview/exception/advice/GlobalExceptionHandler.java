@@ -1,6 +1,7 @@
 package umc.liview.exception.advice;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -9,11 +10,15 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import umc.liview.common.utils.logger.ResponseLogger;
 import umc.liview.exception.BusinessException;
 import umc.liview.exception.ErrorResponse;
 import umc.liview.exception.code.ErrorCode;
 
+import javax.naming.SizeLimitExceededException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -69,6 +74,14 @@ public class GlobalExceptionHandler {
         return createErrorResponse(e, ErrorCode.DATA_INTEGRITY_VIOLATE);
     }
 
+    // 이미지 크기 초과시 발생
+    @ExceptionHandler({MaxUploadSizeExceededException.class, SizeLimitExceededException.class, MissingServletRequestPartException.class, MultipartException.class})
+    protected ResponseEntity<ErrorResponse> imageFileSize(Exception e) {
+        log.error("handleImageFileSizeException", e);
+        return ErrorResponse.toResponseEntity(ErrorCode.FILE_SIZE);
+    }
+
+
     // 나머지 에러 여기서 핸들링
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
@@ -82,7 +95,7 @@ public class GlobalExceptionHandler {
         if (e.getClass().equals(MethodArgumentNotValidException.class)) {
             response = ErrorResponse.toResponseEntity(ErrorCode.INVALID_REQUEST_PARAMETER,
                     ((MethodArgumentNotValidException) e).getBindingResult().getFieldErrors().stream()
-                            .map(err -> err.getDefaultMessage()).collect(Collectors.joining(" and ")));
+                            .map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(" and ")));
         } else {
             response = ErrorResponse.toResponseEntity(errorCode);
         }
