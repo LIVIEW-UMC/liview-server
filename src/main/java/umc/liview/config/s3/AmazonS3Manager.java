@@ -41,6 +41,26 @@ public class AmazonS3Manager {
         }
         return "";
     }
+
+    public String uploadUserFile(MultipartFile file) {
+
+        String fileName = UUID.randomUUID().toString().concat(file.getOriginalFilename());
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
+
+        try {
+            String imgURL = amazonS3.getUrl(amazonConfig.getBucket(), amazonConfig.getUserPath() + "/" + fileName).toString();
+            amazonS3.putObject(new PutObjectRequest(amazonConfig.getBucket(), amazonConfig.getTourPath() + "/" + fileName, file.getInputStream(), metadata));
+            return imgURL;
+
+        } catch (IOException e) {
+            log.error("error at AmazonS3Manager uploadFile : {}", (Object) e.getStackTrace());
+
+        }
+        return "";
+    }
 }
 
 
