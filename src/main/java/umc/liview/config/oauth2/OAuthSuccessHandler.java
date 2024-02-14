@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 import umc.liview.auth.application.UserCommandService;
 import umc.liview.auth.application.UserQueryService;
@@ -50,6 +51,7 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         String accessToken = jwtFactory.createAccessToken(user.getId());
         String refreshToken = jwtFactory.createRefreshToken(user.getId());
         String uri = createRedirectionURI(accessToken, refreshToken).toString();
+
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
 
