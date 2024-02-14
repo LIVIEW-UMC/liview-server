@@ -30,6 +30,9 @@ public class AmazonConfig {
     @Value("${cloud.aws.s3.path.tour}")
     private String tourPath;
 
+    @Value("${cloud.aws.s3.path.user}")
+    private String userPath;
+
     @Value(("${cloud.aws.s3.bucket}"))
     private String bucket;
 
