@@ -35,9 +35,9 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         // email 로 회원 찾기 -> 없으면 저장
         Optional<User> optionalUser = findUser(email);
         if (optionalUser.isPresent()) {
-            redirect(request, response, optionalUser.get(), false);
+            redirect(request, response, optionalUser.get());
         } else {
-            redirect(request, response, createAndSaveUser(oAuth2User), true);
+            redirect(request, response, createAndSaveUser(oAuth2User));
         }
     }
 
@@ -46,19 +46,17 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         return userCommandService.saveOAuthUser(user);
     }
 
-    private void redirect (HttpServletRequest request, HttpServletResponse response, User user, boolean isNewUser) throws IOException {
+    private void redirect (HttpServletRequest request, HttpServletResponse response, User user) throws IOException {
         String accessToken = jwtFactory.createAccessToken(user.getId());
         String refreshToken = jwtFactory.createRefreshToken(user.getId());
-        String uri = createRedirectionURI(accessToken, refreshToken, user.getId(), isNewUser).toString();
+        String uri = createRedirectionURI(accessToken, refreshToken).toString();
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
 
-    private URI createRedirectionURI(String accessToken, String refreshToken, Long userId, boolean isNewUser) {
+    private URI createRedirectionURI(String accessToken, String refreshToken) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("user_id", String.valueOf(userId));
         queryParams.add("access_token", accessToken);
         queryParams.add("refresh_token", refreshToken);
-        queryParams.add("isNewUser", String.valueOf(isNewUser));
 
         //13.124.86.122
         return UriComponentsBuilder.newInstance()

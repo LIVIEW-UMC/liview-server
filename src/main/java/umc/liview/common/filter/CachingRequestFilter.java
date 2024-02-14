@@ -11,7 +11,9 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
+@Slf4j
 @Component
 public class CachingRequestFilter extends OncePerRequestFilter {
     @Override
