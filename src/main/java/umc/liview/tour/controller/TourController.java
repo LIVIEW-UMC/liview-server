@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import umc.liview.community.domain.Post;
+import umc.liview.community.service.PostService;
 import umc.liview.config.auth.JwtUserDetails;
 import umc.liview.tour.domain.Tour;
 import umc.liview.tour.domain.TourImages;
@@ -23,6 +26,7 @@ public class TourController {
 
     private final TourService tourservice;
     private final TourImageService tourImageService;
+    private final PostService postService;
     private final TagService tagService;
 
     // 일정 생성
@@ -30,12 +34,12 @@ public class TourController {
     public void makeTourController(
             //제목, 내용, 완료여부
             @RequestPart TourRequestDTO tourRequestDTO,
-            @ModelAttribute ImageCreateModel imageCreateModel,
+            @RequestParam List<MultipartFile> multipartFileList,
             @AuthenticationPrincipal JwtUserDetails jwtUserDetails
                 ){
 
         Long userId = jwtUserDetails.getUserId();
-        tourservice.makeTourService(tourRequestDTO,imageCreateModel.getImageCreateDTOS(),userId);
+        tourservice.makeTourService(tourRequestDTO, multipartFileList,tourRequestDTO.getImageMetadataDTOList(),userId);
 
     }
 
@@ -58,14 +62,14 @@ public class TourController {
                         .imageURL(tourImageService.getThumbnail(tour))
                         .build());
             }
-            log.info(simpleIncompletedTourDTOS.get(0).getImageURL());
+
         }
         return simpleIncompletedTourDTOS;
     }
 
     //미완성 일정 상세 조회
     @GetMapping("/tours/incompleted/detail/{tourId}")
-    public DetailIncompletedTourDTO getDetailIncompletedTourController(
+    public DetailIncompletedTourDTO getIncompleteTourController(
             @PathVariable Long tourId){
 
         Tour tour = tourservice.getTour(tourId);
@@ -83,12 +87,15 @@ public class TourController {
                 .build();
     }
 
+
     @DeleteMapping("/tours/{tourId}")
     public void deleteTourController(
             @PathVariable Long tourId
     ){
         tourservice.deleteTourService(tourId);
     }
+
+
 
 
 }

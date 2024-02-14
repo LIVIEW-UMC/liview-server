@@ -33,11 +33,19 @@ public class Tour extends Serializers.Base {
     @Column(name = "contents")
     private String contents;
 
+    @Column(name = "size")
+    private String size;
+
     @Column(name = "is_classified") //얜 뭐하는 애지 ?
     private boolean isClassified;
 
-    @Embedded
-    private Period period;
+    @Column
+    private String startDay;
+
+    @Column
+    private String endDay;
+
+
 
 
     @Enumerated(EnumType.STRING)
@@ -80,6 +88,9 @@ public class Tour extends Serializers.Base {
                 .contents(tourRequestDTO.getContents())
                 .title(tourRequestDTO.getTitle())
                 .isClassified(Boolean.parseBoolean(tourRequestDTO.getIsClassfied()))
+                .size(tourRequestDTO.getSize())
+                .startDay(tourRequestDTO.getStartDay())
+                .endDay(tourRequestDTO.getEndDay())
                 .build();
 
     }
@@ -107,5 +118,15 @@ public class Tour extends Serializers.Base {
         this.isClassified = bool;
     }
 
+    public void changeStartDay(String day){
+        this.startDay = day;
+    }
 
+    public void changeEndDay(String day){
+        this.endDay = day;
+    }
+
+    public void changeSize(String size){
+        this.size = size;
+    }
 }

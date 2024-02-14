@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import umc.liview.community.domain.Post;
 import umc.liview.community.service.PostService;
 import umc.liview.config.s3.AmazonS3Manager;
@@ -11,7 +12,7 @@ import umc.liview.tour.domain.Tag;
 import umc.liview.tour.domain.Tour;
 import umc.liview.tour.domain.TourImages;
 import umc.liview.tour.domain.TourTags;
-import umc.liview.tour.dto.ImageCreateDTO;
+import umc.liview.tour.dto.ImageMetadataDTO;
 import umc.liview.tour.dto.SimpleTourDTO;
 import umc.liview.tour.dto.TourRequestDTO;
 import umc.liview.tour.repository.TagRepository;
@@ -97,7 +98,7 @@ public class TourService {
 
     // 폴더 선택하면 폴더에 넣어지도록 !!
     @Transactional
-    public void makeTourService(TourRequestDTO tourRequestDTO, List<ImageCreateDTO> imageCreateDTOS,Long userId){
+    public void makeTourService(TourRequestDTO tourRequestDTO, List<MultipartFile> multipartFileList, List<ImageMetadataDTO> imageMetadataDTOList, Long userId){
 
         User user = userRepository.getReferenceById(userId);
 
@@ -111,7 +112,9 @@ public class TourService {
         tour.changeContent(tourRequestDTO.getContents());
         tour.changeTitle(tourRequestDTO.getTitle());
         tour.changeCompleteStatus(tourRequestDTO.getCompleteStatus());
-
+        tour.changeSize(tourRequestDTO.getSize());
+        tour.changeStartDay(tourRequestDTO.getStartDay());
+        tour.changeEndDay(tourRequestDTO.getEndDay());
 
         if (tourRequestDTO.getCompleteStatus().equals(Tour.CompleteStatus.COMPLETE)) {
             Post post = postService.createPost(userId);
@@ -123,20 +126,23 @@ public class TourService {
         tourRepository.save(tour);
         createHashtag(tour,tourRequestDTO.getHashtag());
 
+        int index = 0;
         // 투어 생성 -> for each 이미지 업로드 => Tourimage생성
-        for (ImageCreateDTO img : imageCreateDTOS) {
-            String imgURL = s3Manager.uploadFile(img.getFile());
+        for (ImageMetadataDTO meta : imageMetadataDTOList) {
+
+            String imgURL = s3Manager.uploadFile(multipartFileList.get(index));
 
             TourImages tourImages = TourImages.builder()
                     .imageUrl(imgURL)
                     .tour(tour)
-                    .date(img.getDate())
-                    .isThumbnail(Boolean.parseBoolean(img.getIsThumbnail()))
-                    .latitude(img.getLatitude())
-                    .longitude(img.getLongitude())
-                    .imageLocation(img.getImgLocation())
+                    .date(meta.getDate())
+                    .isThumbnail(Boolean.parseBoolean(meta.getIsThumbnail()))
+                    .latitude(meta.getLatitude())
+                    .longitude(meta.getLongitude())
+                    .imageLocation(meta.getImgLocation())
                     .build();
 
+            index++;
             tourImageRepository.save(tourImages);
         }
 
@@ -161,18 +167,19 @@ public class TourService {
 
     createHashtag(tour,tourRequestDTO.getHashtag());
 
+    int index = 0;
     // 투어 생성 -> for each 이미지 업로드 => Tourimage생성
-    for (ImageCreateDTO img : imageCreateDTOS) {
-        String imgURL = s3Manager.uploadFile(img.getFile());
+    for (ImageMetadataDTO meta : imageMetadataDTOList) {
+        String imgURL = s3Manager.uploadFile(multipartFileList.get(index));
 
         TourImages tourImages = TourImages.builder()
                 .imageUrl(imgURL)
                 .tour(tour)
-                .date(img.getDate())
-                .isThumbnail(Boolean.parseBoolean(img.getIsThumbnail()))
-                .latitude(img.getLatitude())
-                .longitude(img.getLongitude())
-                .imageLocation(img.getImgLocation())
+                .date(meta.getDate())
+                .isThumbnail(Boolean.parseBoolean(meta.getIsThumbnail()))
+                .latitude(meta.getLatitude())
+                .longitude(meta.getLongitude())
+                .imageLocation(meta.getImgLocation())
                 .build();
 
         tourImageRepository.save(tourImages);

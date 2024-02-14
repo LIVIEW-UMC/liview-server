@@ -3,7 +3,9 @@ package umc.liview.community.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import umc.liview.community.domain.Post;
+import umc.liview.community.dto.PostDTO;
 import umc.liview.community.repository.PostRepository;
 import umc.liview.tour.domain.Tour;
 import umc.liview.tour.repository.TourRepository;
@@ -69,4 +71,17 @@ public class PostService {
 
         return tourList;
     }
+
+    @Transactional
+    public void increaseViewCount(Post post) {
+        post.increaseViewCount();
+        postRepository.save(post);
+    }
+
+    public List<PostDTO> getMyAllPostService(Long myId) {
+        List<PostDTO> postDTOList = new ArrayList<>();
+        return postDTOList;
+
+    }
+
 }
