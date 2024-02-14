@@ -34,7 +34,7 @@ public class TourController {
     public void makeTourController(
             //제목, 내용, 완료여부
             @RequestPart TourRequestDTO tourRequestDTO,
-            @RequestParam List<MultipartFile> multipartFileList,
+            @RequestPart List<MultipartFile> multipartFileList,
             @AuthenticationPrincipal JwtUserDetails jwtUserDetails
                 ){
 

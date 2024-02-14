@@ -9,6 +9,7 @@ import umc.liview.community.dto.PostDTO;
 import umc.liview.community.repository.PostRepository;
 import umc.liview.tour.domain.Tour;
 import umc.liview.tour.repository.TourRepository;
+import umc.liview.tour.service.TourImageService;
 import umc.liview.user.domain.User;
 import umc.liview.user.domain.UserRepository;
 
@@ -22,6 +23,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final TourRepository tourRepository;
+    private final TourImageService tourImageService;
 
     public Post createPost(Long userId) {
 
@@ -80,6 +82,14 @@ public class PostService {
 
     public List<PostDTO> getMyAllPostService(Long myId) {
         List<PostDTO> postDTOList = new ArrayList<>();
+
+        List<Tour> tourList = tourRepository.findAllByUserIdAndCompleteStatus(myId, Tour.CompleteStatus.COMPLETE);
+
+        for(Tour tour : tourList){
+            PostDTO postDTO = PostDTO.toPostDTO(tour, tourImageService.getThumbnail(tour), tour.getPost().getViewCounts());
+            postDTOList.add(postDTO);
+        }
+
         return postDTOList;
 
     }

@@ -13,6 +13,9 @@ public interface TourRepository extends JpaRepository<Tour,Long> {
 
     List<Tour> findAllByUserAndCompleteStatus(User user, Tour.CompleteStatus completeStatus);
 
+    List<Tour> findAllByUserIdAndCompleteStatus(Long userId, Tour.CompleteStatus completeStatus);
+
+
     List<Tour> findAllByUserIdAndCompleteStatusAndIsClassified(Long userId, Tour.CompleteStatus completeStatus , boolean isClassfied);
 
 

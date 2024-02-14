@@ -10,6 +10,7 @@ public class UserConverter {
                 .email(user.getEmail())
                 .follower(follower)
                 .following(following)
+                .imgUrl(user.getImgUrl())
                 .build();
     }
 
