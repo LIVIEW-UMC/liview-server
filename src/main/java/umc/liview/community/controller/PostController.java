@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import umc.liview.community.domain.Post;
+import umc.liview.community.dto.PostDTO;
 import umc.liview.community.service.PostService;
 import umc.liview.config.auth.JwtUserDetails;
 import umc.liview.tour.domain.Tour;
@@ -74,5 +75,16 @@ public class PostController {
                 .imgList(tourImagesList)
                 .build();
     }
+
+    @GetMapping("/community/mypost")
+    public List<PostDTO>getMyAllPostController(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
+
+        Long myId = jwtUserDetails.getUserId();
+        return postService.getMyAllPostService(myId);
+
+
+    }
+
+
 
 }
