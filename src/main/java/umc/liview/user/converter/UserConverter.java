@@ -16,9 +16,9 @@ public class UserConverter {
     public static UserResponseDTO.UserProfile toUserProfile(User user){
         return UserResponseDTO.UserProfile.builder()
                 .name(user.getName())
-                .introduction(user.getIntroduction())
                 .email(user.getEmail())
-                .path("Not path")
+                .introduction(user.getIntroduction())
+                .imgUrl(user.getImgUrl())
                 .build();
     }
 
