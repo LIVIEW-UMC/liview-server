@@ -1,5 +1,7 @@
 package umc.liview.tour.dto;
 
+;
+
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,14 +14,14 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @ToString
-public class ImageCreateDTO{
+public class ImageMetadataDTO{
 
-        private MultipartFile file;
-        private String date;
-        private String imgLocation;
-        private double latitude;
-        private double longitude;
-        private String isThumbnail;
+    private String date;
+    private String imgLocation;
+    private double latitude;
+    private double longitude;
+    private String isThumbnail;
 
 
 }
+
