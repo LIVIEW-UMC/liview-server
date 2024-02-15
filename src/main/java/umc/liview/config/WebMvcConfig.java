@@ -1,6 +1,5 @@
 package umc.liview.config;
 
-import com.amazonaws.HttpMethod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
