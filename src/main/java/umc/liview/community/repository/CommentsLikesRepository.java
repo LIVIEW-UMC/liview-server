@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CommentsLikesRepository extends JpaRepository<CommentsLikes, Long> {
     List<CommentsLikes> findAllByCommentsAndAndUserId(Comments comments, Long userId);
+    Long countByComments(Comments comments);
+    Long countByCommentsAndUserId(Comments comments, Long userId);
 }

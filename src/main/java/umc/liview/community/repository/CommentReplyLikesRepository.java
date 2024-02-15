@@ -10,4 +10,6 @@ import java.util.List;
 public interface CommentReplyLikesRepository extends JpaRepository<CommentReplyLikes, Long> {
 
     List<CommentReplyLikes> findAllByCommentReplyAndUserId(CommentReply commentReply, Long userId);
+    Long countByCommentReply(CommentReply commentReply);
+    Long countByCommentReplyAndUserId(Long userId, CommentReply commentReply);
 }
