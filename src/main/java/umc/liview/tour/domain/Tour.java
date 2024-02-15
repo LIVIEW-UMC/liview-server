@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import umc.liview.common.basetime.BaseTimeEntity;
 import umc.liview.community.domain.Post;
 import umc.liview.tour.dto.TourRequestDTO;
 import umc.liview.user.domain.User;
@@ -21,8 +22,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @ToString
-@EntityListeners(AuditingEntityListener.class)
-public class Tour extends Serializers.Base {
+public class Tour extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,55 +32,30 @@ public class Tour extends Serializers.Base {
     private String title;
     @Column(name = "contents")
     private String contents;
-
     @Column(name = "size")
     private String size;
-
     @Column(name = "is_classified") //얜 뭐하는 애지 ?
     private boolean isClassified;
-
     @Column
     private String startDay;
-
     @Column
     private String endDay;
-
-
-
-
     @Enumerated(EnumType.STRING)
     @Column(name = "complete_status")
-    private Tour.CompleteStatus completeStatus;
-
-    @Getter
-    @RequiredArgsConstructor
-    public enum CompleteStatus {
-        COMPLETE("완성"),
-        INCOMPLETE("미완성"),
-        ;
-
-        private final String completeStatus;
-    }
+    private CompleteStatus completeStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private Post post;
-
     @JsonManagedReference
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private List<TourImages> tourImages = new ArrayList<>();
-
     @JsonIgnore
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private List<TourTags> tourTags = new ArrayList<>();
-
-    @CreatedDate
-    private LocalDateTime createdAt;
-
 
     public static Tour toTourEntity(TourRequestDTO tourRequestDTO){
         return Tour.builder()
@@ -93,6 +68,16 @@ public class Tour extends Serializers.Base {
                 .endDay(tourRequestDTO.getEndDay())
                 .build();
 
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum CompleteStatus {
+        COMPLETE("완성"),
+        INCOMPLETE("미완성"),
+        ;
+
+        private final String completeStatus;
     }
 
     public void setPost(Post post){
