@@ -220,6 +220,7 @@ public class TourService {
                                 .title(tour.getTitle())
                                 .localDateTime(tour.getCreatedAt())
                                 .imageURL(tourImageService.getThumbnail(tour))
+                                .size(tour.getSize())
                                 .build());
             }
         }

@@ -53,6 +53,7 @@ public class FolderService {
         return tourList;
     }
 
+    @Transactional
     public List<Tour> getOtherFolderDetailService(Long folderId) {
 
         Optional<Folder> tempFolder = folderRepository.findById(folderId);
@@ -79,6 +80,7 @@ public class FolderService {
     }
 
 
+    @Transactional
 
 
     public void createFolder(FolderDTO folderDTO) {
@@ -93,13 +95,13 @@ public class FolderService {
 
         folderRepository.save(folder);
     }
-
+    @Transactional
     public void deleteFolderService(Long folderId) {
         folderRepository.deleteById(folderId);
     }
 
 
-
+    @Transactional
     public List<FolderDTO> getMyFolder(Long userId, String owner) {
         //내 게시글이 담긴 나의 폴더
         List<FolderDTO> myFolderDTOList = new ArrayList<>();
@@ -124,12 +126,15 @@ public class FolderService {
     }
 
 
+
+    @Transactional
     public void renameFolder(Long userId,FolderDTO requestFolderDTO) {
         Folder folder = folderRepository.getById(requestFolderDTO.getId());
         folder.changeName(requestFolderDTO.getName());
         folderRepository.save(folder);
     }
 
+    @Transactional
     public void addTourService(Long tourId, Long folderId) {
         Tour tour = tourRepository.getReferenceById(tourId);
         Folder folder = folderRepository.getReferenceById(folderId);

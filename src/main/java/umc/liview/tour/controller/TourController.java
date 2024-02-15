@@ -59,6 +59,7 @@ public class TourController {
                         .tourId(tour.getId())
                         .title(tour.getTitle())
                         .localDateTime(tour.getCreatedAt())
+                        .size(tour.getSize())
                         .imageURL(tourImageService.getThumbnail(tour))
                         .build());
             }
@@ -68,7 +69,7 @@ public class TourController {
     }
 
     //미완성 일정 상세 조회
-    @GetMapping("/tours/incompleted/detail/{tourId}")
+    @GetMapping("/tours/completed/detail/{tourId}")
     public DetailIncompletedTourDTO getIncompleteTourController(
             @PathVariable Long tourId){
 
