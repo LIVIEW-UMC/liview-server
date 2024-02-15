@@ -2,12 +2,13 @@ package umc.liview.community.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import umc.liview.community.domain.Post;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Likes {
+@AllArgsConstructor
+@Builder
+public class CommentReplyLikes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +18,6 @@ public class Likes {
     private long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "commentReply")
+    private CommentReply commentReply;
 }
