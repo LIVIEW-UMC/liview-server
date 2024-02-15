@@ -24,6 +24,11 @@ public enum ErrorCode {
 
     // User
     USER_NOT_FOUND(UserCode.USER_NOTFOUND.getCode(), NOT_FOUND, "존재하지 않는 회원"),
+
+    // Post
+    POST_NOT_FOUND(PostCode.POST_NOT_FOUND.getCode(), NOT_FOUND, "존재하지 않는 글"),
+    COMMENTS_NOT_FOUND(PostCode.COMMENTS_NOT_FOUND.getCode(), NOT_FOUND, "존재하지 않는 댓글"),
+    REPLY_NOT_FOUND(PostCode.REPLY_NOT_FOUND.getCode(), NOT_FOUND, "존재하지 않는 답글"),
     ;
 
     private final String code;
