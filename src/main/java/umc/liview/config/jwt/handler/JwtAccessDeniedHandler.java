@@ -18,6 +18,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
         ACCESS_DENIED.setResponse(response);
-        ResponseLogger.loggingWithJWTExceptionInfo(ErrorResponse.toResponseEntity(ACCESS_DENIED), ACCESS_DENIED);
+        ResponseLogger.loggingWithJWTExceptionInfo(request, ErrorResponse.toResponseEntity(ACCESS_DENIED), ACCESS_DENIED);
     }
 }
