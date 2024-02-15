@@ -1,42 +1,31 @@
 package umc.liview.common.interceptor;
 
-import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 import umc.liview.common.utils.logger.RequestLogger;
 import umc.liview.common.utils.logger.ResponseLogger;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class LoggingInterceptor implements HandlerInterceptor {
 
+    // PostHandler's Logging - 성공하면 실행
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
-                                @Nullable Exception ex) {
-
-        // Request Logging
-        if (!verifyMultipartFileContained(request)) {
-            RequestLogger.logging(request);
-        } else {
-            RequestLogger.loggingMultipartRequest(request);
-        }
-
-        // Successful Response Logging
-        if (isSuccess(response.getStatus())) {
-            ResponseLogger.logging(response);
-        }
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+                            @org.springframework.lang.Nullable ModelAndView modelAndView) throws Exception {
+        logRequest(request);
+        logSuccessfulResponse(response);
     }
 
-    private boolean verifyMultipartFileContained(HttpServletRequest request) {
-        return (boolean) request.getAttribute("isMultipartFile");
+    private void logRequest(HttpServletRequest request) {
+        RequestLogger.logging(request);
     }
 
-    private boolean isSuccess(int responseStatus) {
-        return !HttpStatus.valueOf(responseStatus).is4xxClientError() && !HttpStatus.valueOf(responseStatus)
-                .is5xxServerError();
+    private void logSuccessfulResponse(HttpServletResponse response) {
+        ResponseLogger.loggingSuccessResponse(response);
     }
 }

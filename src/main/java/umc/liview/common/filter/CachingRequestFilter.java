@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
-import org.springframework.web.util.ContentCachingResponseWrapper;
-
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 @Slf4j
 @Component
@@ -20,19 +17,15 @@ public class CachingRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // Response Wrapping
-        ContentCachingResponseWrapper wrappingResponse = new ContentCachingResponseWrapper(response);
-
         // Multipart Type 이면 Skip
         if (verifyMultipartFileIncluded(request)) {
-            filterChain.doFilter(request, wrappingResponse);
+            filterChain.doFilter(request, response);
             return;
         }
 
         // Request Wrapping
         ContentCachingRequestWrapper wrappingRequest = new ContentCachingRequestWrapper(request);
-        filterChain.doFilter(wrappingRequest, wrappingResponse);
-        wrappingResponse.copyBodyToResponse();
+        filterChain.doFilter(wrappingRequest, response);
     }
 
     private boolean verifyMultipartFileIncluded(HttpServletRequest request) {
