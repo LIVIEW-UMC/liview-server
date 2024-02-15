@@ -88,15 +88,10 @@ public class TourController {
                 .build();
     }
 
-
     @DeleteMapping("/tours/{tourId}")
     public void deleteTourController(
             @PathVariable Long tourId
     ){
         tourservice.deleteTourService(tourId);
     }
-
-
-
-
 }
