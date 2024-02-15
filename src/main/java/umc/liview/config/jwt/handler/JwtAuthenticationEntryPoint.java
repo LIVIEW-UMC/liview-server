@@ -2,7 +2,6 @@ package umc.liview.config.jwt.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -17,9 +16,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        JwtException exception = getJwtException(request);
-        exception.setResponse(response);
-        ResponseLogger.loggingWithJWTExceptionInfo(ErrorResponse.toResponseEntity(exception), exception);
+        JwtException jwtException = getJwtException(request);
+        jwtException.setResponse(response);
+        ResponseLogger.loggingWithJWTExceptionInfo(request, ErrorResponse.toResponseEntity(jwtException), jwtException);
     }
 
     private JwtException getJwtException(HttpServletRequest request) {
