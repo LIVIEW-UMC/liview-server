@@ -81,7 +81,6 @@ public class Tour extends Serializers.Base {
     @CreatedDate
     private LocalDateTime createdAt;
 
-
     public static Tour toTourEntity(TourRequestDTO tourRequestDTO){
         return Tour.builder()
                 .completeStatus(tourRequestDTO.getCompleteStatus())

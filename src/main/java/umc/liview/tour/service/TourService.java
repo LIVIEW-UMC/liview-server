@@ -128,9 +128,10 @@ public class TourService {
 
         int index = 0;
         // 투어 생성 -> for each 이미지 업로드 => Tourimage생성
-        for (ImageMetadataDTO meta : imageMetadataDTOList) {
 
-            String imgURL = s3Manager.uploadFile(multipartFileList.get(index));
+        for (MultipartFile file : multipartFileList){
+            String imgURL = s3Manager.uploadFile(file);
+            ImageMetadataDTO meta = imageMetadataDTOList.get(index);
 
             TourImages tourImages = TourImages.builder()
                     .imageUrl(imgURL)
@@ -144,7 +145,9 @@ public class TourService {
 
             index++;
             tourImageRepository.save(tourImages);
+
         }
+
 
     //임시저장 -> 생성
         if (tourRequestDTO.getIsClassfied().equals("true") && tourRequestDTO.getCompleteStatus().equals(Tour.CompleteStatus.COMPLETE)){
@@ -168,9 +171,11 @@ public class TourService {
     createHashtag(tour,tourRequestDTO.getHashtag());
 
     int index = 0;
-    // 투어 생성 -> for each 이미지 업로드 => Tourimage생성
-    for (ImageMetadataDTO meta : imageMetadataDTOList) {
-        String imgURL = s3Manager.uploadFile(multipartFileList.get(index));
+
+
+    for (MultipartFile file : multipartFileList){
+        String imgURL = s3Manager.uploadFile(file);
+        ImageMetadataDTO meta = imageMetadataDTOList.get(index);
 
         TourImages tourImages = TourImages.builder()
                 .imageUrl(imgURL)
@@ -182,8 +187,11 @@ public class TourService {
                 .imageLocation(meta.getImgLocation())
                 .build();
 
+        index++;
         tourImageRepository.save(tourImages);
+
     }
+
 
         if (tourRequestDTO.getIsClassfied().equals("true") && tourRequestDTO.getCompleteStatus().equals(Tour.CompleteStatus.COMPLETE)){
             Optional<Folder> folder = folderRepository.findById(tourRequestDTO.getFolderId());
