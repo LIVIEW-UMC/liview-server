@@ -2,6 +2,7 @@ package umc.liview.community.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.origin.SystemEnvironmentOrigin;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.liview.community.domain.Post;
@@ -17,8 +18,10 @@ import umc.liview.user.domain.User;
 import umc.liview.user.domain.UserRepository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -100,22 +103,23 @@ public class PostService {
 
     }
 
+    // 게시글 조회 - 시간순, 조회수
     @Transactional(readOnly = true)
     public List<PostInfo> findPostInfos(Long userId, String sortedBy, int page) {
-        List<Long> postIds = findPosts(sortedBy, page);
-        return postJpaRepository.findPublishedPosts(postIds);
+        return findPosts(sortedBy, page);
     }
+
 
     @Transactional(readOnly = true)
     public List<PostInfo> findPostInfosByDate(Long userId, PostedDurationQueryDto durationQueryDto, int page) {
         // postIds 리스트 조회
-//        List<Long> postInfos = postJpaRepository.findPostsInDuration(
-//                durationQueryDto.startDay(), durationQueryDto.endDay(), page);
-        //
+        List<Long> postInfos = postJpaRepository.findPostsInDuration(
+                durationQueryDto.startDay(), durationQueryDto.endDay(), page);
+
         return  null;
     }
 
-    private List<Long> findPosts(String sortedBy, int page) {
+    private List<PostInfo> findPosts(String sortedBy, int page) {
         return switch (sortedBy) {
             case "date" -> postJpaRepository.findPostsSortedByDate(page);
             case "views" -> postJpaRepository.findPostsSortedByViews(page);

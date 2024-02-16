@@ -15,35 +15,7 @@ public class PostJpaRepository {
 
     private final EntityManager em;
 
-    // 포스팅된 게시글 조회 - 날짜순
-    public List<Long> findPostsSortedByDate(int page) {
-        return em.createQuery(
-                "select p.id" +
-                                " from Post p" +
-                                " where p.postStatus = :postStatus" +
-                                " order by p.createdAt desc", Long.class
-                )
-                .setParameter("postStatus", Post.PostStatus.PUBLIC)
-                .setFirstResult(page)
-                .setMaxResults(20)
-                .getResultList();
-    }
-
-    // 포스팅된 게시글 조회 - 조회순
-    public List<Long> findPostsSortedByViews(int page) {
-        return em.createQuery(
-                        "select p.id" +
-                                " from Post p" +
-                                " where p.postStatus = :postStatus" +
-                                " order by p.viewCounts desc", Long.class
-                )
-                .setParameter("postStatus", Post.PostStatus.PUBLIC)
-                .setFirstResult(page)
-                .setMaxResults(20)
-                .getResultList();
-    }
-
-    // 포스팅된 게시글 조회 - 조회순
+    // 포스팅된 게시글 조회 - 기간별
     public List<Long> findPostsInDuration(String startDay, String endDay, int page) {
         return em.createQuery(
                 "select p.id" +
@@ -61,13 +33,32 @@ public class PostJpaRepository {
     }
 
     // 게시글 조회
-    public List<PostInfo> findPublishedPosts(List<Long> postIds) {
+    public List<PostInfo> findPostsSortedByDate(int page) {
         return em.createQuery(
                 "select new umc.liview.community.service.dto.response.PostInfo(t.post.id, ti.imageUrl)" +
-                                " from TourImages ti" +
-                                " join ti.tour t" +
-                                " where t.post.id in :postIds and ti.isThumbnail = true", PostInfo.class)
-                .setParameter("postIds", postIds)
+                            " from Tour t" +
+                            " join t.tourImages ti" +
+                            " left join t.post p" +
+                            " where ti.isThumbnail = true and p.postStatus = :postStatus" +
+                            " order by p.createdAt desc ", PostInfo.class)
+                .setParameter("postStatus", Post.PostStatus.PUBLIC)
+                .setFirstResult(page)
+                .setMaxResults(20)
+                .getResultList();
+    }
+
+    // 게시글 조회
+    public List<PostInfo> findPostsSortedByViews(int page) {
+        return em.createQuery(
+                        "select new umc.liview.community.service.dto.response.PostInfo(t.post.id, ti.imageUrl)" +
+                                " from Tour t" +
+                                " join t.tourImages ti" +
+                                " left join t.post p" +
+                                " where ti.isThumbnail = true and p.postStatus = :postStatus" +
+                                " order by p.viewCounts desc ", PostInfo.class)
+                .setParameter("postStatus", Post.PostStatus.PUBLIC)
+                .setFirstResult(page)
+                .setMaxResults(20)
                 .getResultList();
     }
 }
