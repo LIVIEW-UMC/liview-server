@@ -69,24 +69,11 @@ public class TourController {
     }
 
     //미완성 일정 상세 조회
-    @GetMapping("/tours/completed/detail/{tourId}")
+    @GetMapping("/tours/incompleted/detail/{tourId}")
     public DetailIncompletedTourDTO getIncompleteTourController(
             @PathVariable Long tourId){
-
-        Tour tour = tourservice.getTour(tourId);
-
-        List<TourImages> tourImagesList = new ArrayList<>();
-        tourImagesList.add(tourImageService.getThumbnailDetail(tourId));
-        tourImagesList.addAll(tourImageService.getNotThumbailDetail(tourId));
-
-        return DetailIncompletedTourDTO.builder()
-                .tourId(tourId)
-                .contents(tour.getContents())
-                .title(tour.getTitle())
-                .hashtag(tagService.getHashtag(tourId))
-                .imgList(tourImagesList)
-                .build();
-    }
+        return tourservice.getDetailIncompletedTourDTO(tourId);
+        }
 
 
     @DeleteMapping("/tours/{tourId}")
