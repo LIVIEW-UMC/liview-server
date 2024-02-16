@@ -105,7 +105,6 @@ public class TourService {
         User user = userRepository.getReferenceById(userId);
 
 
-
     if (tourRequestDTO.getTourId() != null){
         Optional<Tour> tourTemp = tourRepository.findById(tourRequestDTO.getTourId());
         Tour tour = tourTemp.get();
@@ -122,6 +121,13 @@ public class TourService {
             Post post = postService.createPost(userId);
             tour.setPost(post);
         }
+
+        // 기존의 사진 삭제
+        List<TourImages> tourImagesList = new ArrayList<>();
+        tourImagesList.add(tourImageService.getThumbnailDetail(tour.getId()));
+        tourImagesList.addAll(tourImageService.getNotThumbailDetail(tour.getId()));
+        tourImageRepository.deleteAll(tourImagesList);
+
 
         //해시태그 수정도 해야 해
         deleteHashtag(tour);
