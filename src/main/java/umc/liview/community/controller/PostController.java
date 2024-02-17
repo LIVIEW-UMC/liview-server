@@ -1,15 +1,13 @@
 package umc.liview.community.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import umc.liview.community.controller.dto.PostDtoMapper;
+import umc.liview.community.controller.dto.request.PostSearchDto;
 import umc.liview.community.domain.Post;
 import umc.liview.community.dto.CommentsRequestDTO;
 import umc.liview.community.dto.PostDTO;
-import umc.liview.community.controller.dto.request.PostedDurationDto;
 import umc.liview.community.service.CommentsService;
 import umc.liview.community.service.PostService;
 import umc.liview.community.service.dto.response.PostInfo;
@@ -35,7 +33,6 @@ public class PostController {
     private final TourImageService tourImageService;
     private final TagService tagService;
     private final CommentsService commentsService;
-    private final PostDtoMapper mapper;
 
     // 게시글 조회 - 조회순, 최신순
     @GetMapping("/community")
@@ -45,11 +42,11 @@ public class PostController {
     }
 
     // 게시글 조회 - 날짜별
-    @GetMapping("/community/date")
-    public List<PostInfo> findPostsByDate(@RequestParam int page, @Valid @RequestBody PostedDurationDto postedDurationDto,
-                                          @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+    @GetMapping("/community/search")
+    public List<PostInfo> findPostsByDate(@RequestBody PostSearchDto postSearchDto, @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         Long userId = jwtUserDetails.getUserId();
-        return postService.findPostInfosByDate(userId, mapper.toCommand(postedDurationDto), page);
+        return postService.searchPostInfos(userId, postSearchDto.searchValue()
+                , postSearchDto.sortedBy(), postSearchDto.page());
     }
 
     // 게시글 공개, 비공개 수정
