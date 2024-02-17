@@ -12,6 +12,7 @@ import umc.liview.tour.domain.Tag;
 import umc.liview.tour.domain.Tour;
 import umc.liview.tour.domain.TourImages;
 import umc.liview.tour.domain.TourTags;
+import umc.liview.tour.dto.DetailIncompletedTourDTO;
 import umc.liview.tour.dto.ImageMetadataDTO;
 import umc.liview.tour.dto.SimpleTourDTO;
 import umc.liview.tour.dto.TourRequestDTO;
@@ -39,6 +40,7 @@ public class TourService {
     private final UserRepository userRepository;
     private final PostService postService;
     private final TourImageService tourImageService;
+    private final TagService tagService;
 
     //임시 저장 일정 간단 조회
     public List<Tour> getAllIncompletedTour(Long userId){
@@ -103,7 +105,6 @@ public class TourService {
         User user = userRepository.getReferenceById(userId);
 
 
-
     if (tourRequestDTO.getTourId() != null){
         Optional<Tour> tourTemp = tourRepository.findById(tourRequestDTO.getTourId());
         Tour tour = tourTemp.get();
@@ -121,6 +122,13 @@ public class TourService {
             tour.setPost(post);
         }
 
+        // 기존의 사진 삭제
+        List<TourImages> tourImagesList = new ArrayList<>();
+        tourImagesList.add(tourImageService.getThumbnailDetail(tour.getId()));
+        tourImagesList.addAll(tourImageService.getNotThumbailDetail(tour.getId()));
+        tourImageRepository.deleteAll(tourImagesList);
+
+
         //해시태그 수정도 해야 해
         deleteHashtag(tour);
         tourRepository.save(tour);
@@ -128,9 +136,10 @@ public class TourService {
 
         int index = 0;
         // 투어 생성 -> for each 이미지 업로드 => Tourimage생성
-        for (ImageMetadataDTO meta : imageMetadataDTOList) {
 
-            String imgURL = s3Manager.uploadFile(multipartFileList.get(index));
+        for (MultipartFile file : multipartFileList){
+            String imgURL = s3Manager.uploadFile(file);
+            ImageMetadataDTO meta = imageMetadataDTOList.get(index);
 
             TourImages tourImages = TourImages.builder()
                     .imageUrl(imgURL)
@@ -144,7 +153,9 @@ public class TourService {
 
             index++;
             tourImageRepository.save(tourImages);
+
         }
+
 
     //임시저장 -> 생성
         if (tourRequestDTO.getIsClassfied().equals("true") && tourRequestDTO.getCompleteStatus().equals(Tour.CompleteStatus.COMPLETE)){
@@ -168,9 +179,11 @@ public class TourService {
     createHashtag(tour,tourRequestDTO.getHashtag());
 
     int index = 0;
-    // 투어 생성 -> for each 이미지 업로드 => Tourimage생성
-    for (ImageMetadataDTO meta : imageMetadataDTOList) {
-        String imgURL = s3Manager.uploadFile(multipartFileList.get(index));
+
+
+    for (MultipartFile file : multipartFileList){
+        String imgURL = s3Manager.uploadFile(file);
+        ImageMetadataDTO meta = imageMetadataDTOList.get(index);
 
         TourImages tourImages = TourImages.builder()
                 .imageUrl(imgURL)
@@ -182,8 +195,11 @@ public class TourService {
                 .imageLocation(meta.getImgLocation())
                 .build();
 
+        index++;
         tourImageRepository.save(tourImages);
+
     }
+
 
         if (tourRequestDTO.getIsClassfied().equals("true") && tourRequestDTO.getCompleteStatus().equals(Tour.CompleteStatus.COMPLETE)){
             Optional<Folder> folder = folderRepository.findById(tourRequestDTO.getFolderId());
@@ -192,6 +208,8 @@ public class TourService {
 
     }
     }
+
+
     @Transactional
     public Tour getTour(Long tourId) {
         return tourRepository.getReferenceById(tourId);
@@ -225,5 +243,16 @@ public class TourService {
             }
         }
         return simpleTourDTOList;
+    }
+
+    public DetailIncompletedTourDTO getDetailIncompletedTourDTO(Long tourId) {
+
+        Tour tour = getTour(tourId);
+        List<TourImages> tourImagesList = new ArrayList<>();
+        tourImagesList.add(tourImageService.getThumbnailDetail(tourId));
+        tourImagesList.addAll(tourImageService.getNotThumbailDetail(tourId));
+
+        return DetailIncompletedTourDTO.detailIncompletedTourDTO(tour,tagService.getHashtag(tourId),tourImagesList);
+
     }
 }

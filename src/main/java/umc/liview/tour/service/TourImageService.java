@@ -31,18 +31,13 @@ public class TourImageService {
         Optional<TourImages> tourImages = tourImageRepository.findByTourIdAndIsThumbnail(tourId,true);
         Tour tour = tourRepository.getReferenceById(tourId);
 
-        if (tour.getCompleteStatus() == Tour.CompleteStatus.INCOMPLETE) {
-            tourImageRepository.delete(tourImages.get());
-        }
         return tourImages.get();
     }
     @Transactional
     public List<TourImages> getNotThumbailDetail(Long tourId){
         List<TourImages> tourImagesList = tourImageRepository.findAllByTourIdAndIsThumbnail(tourId,false);
         Tour tour = tourRepository.getReferenceById(tourId);
-        if (tour.getCompleteStatus() == Tour.CompleteStatus.INCOMPLETE) {
-            tourImageRepository.deleteAll(tourImagesList);
-        }
+
         return tourImagesList;
 
     }
