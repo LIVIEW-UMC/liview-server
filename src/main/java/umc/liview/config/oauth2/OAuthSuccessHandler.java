@@ -62,7 +62,6 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                 .scheme("http")
                 .host("localhost")
                 .port(8080)
-                .path("/login-success")
                 .queryParams(queryParams)
                 .build()
                 .toUri();
