@@ -75,15 +75,10 @@ public class TourController {
         return tourservice.getDetailIncompletedTourDTO(tourId);
         }
 
-
     @DeleteMapping("/tours/{tourId}")
     public void deleteTourController(
             @PathVariable Long tourId
     ){
         tourservice.deleteTourService(tourId);
     }
-
-
-
-
 }
