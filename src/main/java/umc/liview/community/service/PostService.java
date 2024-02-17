@@ -2,6 +2,7 @@ package umc.liview.community.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.liview.community.domain.Post;
@@ -25,7 +26,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -103,14 +103,14 @@ public class PostService {
     }
 
     // 게시글 조회 - 시간순, 조회수
-    @Transactional(readOnly = true)
+    @Transactional
     public List<PostInfo> findPostInfos(Long userId, String sortedBy, int page) {
         verifyAndFindUser(userId);
         return findPosts(sortedBy, page);
     }
 
     // 게시글 검색 - 시간순, 조회수
-    @Transactional(readOnly = true)
+    @Transactional
     public List<PostInfo> searchPostInfos(Long userId, String searchValue, String sortedBy, int page) {
         // 검색기록 저장
         User user = verifyAndFindUser(userId);
@@ -118,6 +118,11 @@ public class PostService {
         // 검색
         List<Long> searchedTours = searchTours(searchValue, page);
         return searchPosts(searchedTours, sortedBy);
+    }
+
+    // 검색기록 조회
+    public List<SearchLog> findSearchLogs(Long userId) {
+        return postRedisRepository.findRecentSearchLogs(userId);
     }
 
     private User verifyAndFindUser(Long userId) {

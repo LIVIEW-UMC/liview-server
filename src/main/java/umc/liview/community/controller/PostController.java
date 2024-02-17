@@ -10,6 +10,7 @@ import umc.liview.community.dto.CommentsRequestDTO;
 import umc.liview.community.dto.PostDTO;
 import umc.liview.community.service.CommentsService;
 import umc.liview.community.service.PostService;
+import umc.liview.community.service.dto.request.SearchLog;
 import umc.liview.community.service.dto.response.PostInfo;
 import umc.liview.config.auth.JwtUserDetails;
 import umc.liview.tour.domain.Tour;
@@ -43,10 +44,16 @@ public class PostController {
 
     // 게시글 조회 - 날짜별
     @GetMapping("/community/search")
-    public List<PostInfo> findPostsByDate(@RequestBody PostSearchDto postSearchDto, @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+    public List<PostInfo> findPostsByDate(@RequestBody PostSearchDto postSearchDto, @RequestParam int page, @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         Long userId = jwtUserDetails.getUserId();
-        return postService.searchPostInfos(userId, postSearchDto.searchValue()
-                , postSearchDto.sortedBy(), postSearchDto.page());
+        return postService.searchPostInfos(userId, postSearchDto.searchValue(), postSearchDto.sortedBy(), page);
+    }
+
+    // 검색기록 조회
+    @GetMapping("/community/search/log")
+    public List<SearchLog> findSearchLogs(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        Long userId = jwtUserDetails.getUserId();
+        return postService.findSearchLogs(userId);
     }
 
     // 게시글 공개, 비공개 수정

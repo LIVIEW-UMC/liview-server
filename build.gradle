@@ -70,6 +70,9 @@ dependencies {
 
 	// AWS CloudWatch appender
 	implementation "ca.pjer:logback-awslogs-appender:1.6.0"
+
+	// Caching
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
 }
 
 tasks.named('bootBuildImage') {
