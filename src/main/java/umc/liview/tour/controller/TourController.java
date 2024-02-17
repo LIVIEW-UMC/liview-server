@@ -76,6 +76,9 @@ public class TourController {
         }
 
 
+
+
+
     @DeleteMapping("/tours/{tourId}")
     public void deleteTourController(
             @PathVariable Long tourId
