@@ -1,12 +1,15 @@
 package umc.liview.config.redis;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import umc.liview.community.service.dto.request.SearchLog;
 
 @Configuration
 public class RedisConfig {
@@ -22,15 +25,26 @@ public class RedisConfig {
         return new LettuceConnectionFactory(host, port);
     }
 
+    // JWT Token Template
     @Bean
     public RedisTemplate<String, String> redisTemplate() {
-        // redisTemplate 를 받아와서 set, get, delete 사용
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        // setKeySerializer, setValueSerializer 설정
-        // redis-cli 을 통해 직접 데이터를 조회 시 알아볼 수 없는 형태로 출력되는 것을 방지
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory());
+
+        return redisTemplate;
+    }
+
+    // SearchLog Template
+    @Bean
+    public RedisTemplate<String, SearchLog> SearchLogRedis() {
+        RedisTemplate<String, SearchLog> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(SearchLog.class));
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(SearchLog.class));
 
         return redisTemplate;
     }

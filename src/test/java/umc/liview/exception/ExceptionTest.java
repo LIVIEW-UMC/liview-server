@@ -57,4 +57,9 @@ class ExceptionTest {
             Assertions.assertEquals(ErrorCode.TOUR_NOT_FOUND, e.getErrorCode());
         }
     }
+
+//    @Test
+//    void 날짜_테스트() {
+//        log.info(String.valueOf("20240301"  "20240228"));
+//    }
 }
