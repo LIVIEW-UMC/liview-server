@@ -200,7 +200,6 @@ public class TourService {
 
     }
 
-
         if (tourRequestDTO.getIsClassfied().equals("true") && tourRequestDTO.getCompleteStatus().equals(Tour.CompleteStatus.COMPLETE)){
             Optional<Folder> folder = folderRepository.findById(tourRequestDTO.getFolderId());
             classfiedTour(tour,folder.get());
@@ -245,6 +244,7 @@ public class TourService {
         return simpleTourDTOList;
     }
 
+    @Transactional
     public DetailIncompletedTourDTO getDetailIncompletedTourDTO(Long tourId) {
 
         Tour tour = getTour(tourId);
