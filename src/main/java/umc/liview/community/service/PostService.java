@@ -25,6 +25,7 @@ public class PostService {
     private final TourRepository tourRepository;
     private final TourImageService tourImageService;
 
+    @Transactional
     public Post createPost(Long userId) {
 
             //게시물 공개여부 확인
@@ -46,21 +47,21 @@ public class PostService {
             return post;
     }
 
-
+    @Transactional
     public void togglePostService (Long postId){
         Post post = postRepository.getReferenceById(postId);
         post.toggleActivationStatus();
         postRepository.save(post);
     }
 
-
+    @Transactional
     public List<Tour> getMyNonClassPost(Long userId) {
 
         return tourRepository.findAllByUserIdAndCompleteStatusAndIsClassified(userId,Tour.CompleteStatus.COMPLETE,false);
 
     }
 
-
+    @Transactional
     public List<Tour> getOtherNonClassPost(Long userId) {
         List<Tour> tempTourList = tourRepository.findAllByUserIdAndCompleteStatusAndIsClassified(userId,Tour.CompleteStatus.COMPLETE,false);
         List<Tour> tourList = new ArrayList<>();

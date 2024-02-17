@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import umc.liview.common.basetime.BaseTimeEntity;
 import umc.liview.community.domain.Comments;
+import umc.liview.community.domain.CommentReply;
 import umc.liview.tour.domain.Tour;
 import umc.liview.user.dto.UserRequestDTO;
 
@@ -50,6 +51,10 @@ public class User extends BaseTimeEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Comments> comments = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<CommentReply> commentReply = new ArrayList<>();
 
     @Builder
     public User(String name, String email, String imgUrl) {

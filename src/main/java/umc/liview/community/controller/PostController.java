@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import umc.liview.community.domain.Post;
+import umc.liview.community.dto.CommentsRequestDTO;
 import umc.liview.community.dto.PostDTO;
+import umc.liview.community.service.CommentsService;
 import umc.liview.community.service.PostService;
 import umc.liview.config.auth.JwtUserDetails;
 import umc.liview.tour.domain.Tour;
@@ -28,6 +30,7 @@ public class PostController {
     private final TourService tourService;
     private final TourImageService tourImageService;
     private final TagService tagService;
+    private final CommentsService commentsService;
     // 게시글 공개, 비공개 수정
     @PatchMapping("/community/post/{postId}")
     public void togglePostController(@PathVariable Long postId){ postService.togglePostService(postId);}
@@ -85,6 +88,25 @@ public class PostController {
 
     }
 
-
-
+    @PostMapping("/community/board/{postId}/comment")
+    public void postComments(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable(value = "postId") Long postId, @RequestBody CommentsRequestDTO.postComments postComments){
+        Long userId = jwtUserDetails.getUserId();
+        System.out.println("userId = " + userId);
+        commentsService.postComments(postId, userId, postComments);
+    }
+    @PostMapping("/community/comment/{commentId}/likes")
+    public void likeComments(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable(value = "commentId") Long commentId){
+        Long userId = jwtUserDetails.getUserId();
+        commentsService.likeComments(commentId, userId);
+    }
+    @PostMapping("/community/comment/{commentId}")
+    public void postCommentReply(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable(value = "commentId") Long commentId, @RequestBody CommentsRequestDTO.postComments postComments){
+        Long userId = jwtUserDetails.getUserId();
+        commentsService.postReply(userId, commentId, postComments);
+    }
+    @PostMapping("/community/reply/{replyId}/likes")
+    public void likeReply(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable(value = "replyId") Long replyId){
+        Long userId = jwtUserDetails.getUserId();
+        commentsService.likeReply(replyId, userId);
+    }
 }

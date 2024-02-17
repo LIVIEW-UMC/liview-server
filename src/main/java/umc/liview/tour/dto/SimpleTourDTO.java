@@ -16,6 +16,6 @@ public class SimpleTourDTO {
     private String title;
     private String imageURL;
     private LocalDateTime localDateTime;
-
+    private String size;
 
 }

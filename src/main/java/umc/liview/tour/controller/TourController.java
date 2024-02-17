@@ -59,6 +59,7 @@ public class TourController {
                         .tourId(tour.getId())
                         .title(tour.getTitle())
                         .localDateTime(tour.getCreatedAt())
+                        .size(tour.getSize())
                         .imageURL(tourImageService.getThumbnail(tour))
                         .build());
             }
@@ -71,21 +72,8 @@ public class TourController {
     @GetMapping("/tours/incompleted/detail/{tourId}")
     public DetailIncompletedTourDTO getIncompleteTourController(
             @PathVariable Long tourId){
-
-        Tour tour = tourservice.getTour(tourId);
-
-        List<TourImages> tourImagesList = new ArrayList<>();
-        tourImagesList.add(tourImageService.getThumbnailDetail(tourId));
-        tourImagesList.addAll(tourImageService.getNotThumbailDetail(tourId));
-
-        return DetailIncompletedTourDTO.builder()
-                .tourId(tourId)
-                .contents(tour.getContents())
-                .title(tour.getTitle())
-                .hashtag(tagService.getHashtag(tourId))
-                .imgList(tourImagesList)
-                .build();
-    }
+        return tourservice.getDetailIncompletedTourDTO(tourId);
+        }
 
 
     @DeleteMapping("/tours/{tourId}")
