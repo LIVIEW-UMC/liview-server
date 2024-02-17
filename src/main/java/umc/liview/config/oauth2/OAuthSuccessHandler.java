@@ -59,9 +59,9 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         queryParams.add("refresh_token", refreshToken);
 
         return UriComponentsBuilder.newInstance()
-                .scheme("https")
-                .host("jin-myserver.shop")
-                .path("/login-success")
+                .scheme("http")
+                .host("localhost")
+                .port(3000)
                 .queryParams(queryParams)
                 .build()
                 .toUri();

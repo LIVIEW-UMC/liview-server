@@ -25,11 +25,10 @@ public class AuthController {
         response.sendRedirect("https://jin-myserver.shop/oauth2/authorization/" + socialLoginPath);
     }
 
-    @GetMapping("/login-success")
+    @GetMapping("/")
     public TokenResponse login(@RequestParam String access_token, @RequestParam String refresh_token) {
         return new TokenResponse(access_token, refresh_token);
     }
-
 
     @PostMapping("/reissue")
     public TokenResponse reissue(@Valid @RequestBody TokenReissueDto tokenReissueDto) {
