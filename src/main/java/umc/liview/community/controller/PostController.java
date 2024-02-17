@@ -4,11 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import umc.liview.community.controller.dto.request.PostSearchDto;
 import umc.liview.community.domain.Post;
 import umc.liview.community.dto.CommentsRequestDTO;
 import umc.liview.community.dto.PostDTO;
 import umc.liview.community.service.CommentsService;
 import umc.liview.community.service.PostService;
+import umc.liview.community.service.dto.request.SearchLog;
+import umc.liview.community.service.dto.response.PostInfo;
 import umc.liview.config.auth.JwtUserDetails;
 import umc.liview.tour.domain.Tour;
 import umc.liview.tour.domain.TourImages;
@@ -31,10 +34,31 @@ public class PostController {
     private final TourImageService tourImageService;
     private final TagService tagService;
     private final CommentsService commentsService;
+
+    // 게시글 조회 - 조회순, 최신순
+    @GetMapping("/community")
+    public List<PostInfo> findPosts(@RequestParam String sortedBy, @RequestParam int page, @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        Long userId = jwtUserDetails.getUserId();
+        return postService.findPostInfos(userId, sortedBy, page);
+    }
+
+    // 게시글 조회 - 날짜별
+    @GetMapping("/community/search")
+    public List<PostInfo> findPostsByDate(@RequestBody PostSearchDto postSearchDto, @RequestParam int page, @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        Long userId = jwtUserDetails.getUserId();
+        return postService.searchPostInfos(userId, postSearchDto.searchValue(), postSearchDto.sortedBy(), page);
+    }
+
+    // 검색기록 조회
+    @GetMapping("/community/search/log")
+    public List<SearchLog> findSearchLogs(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        Long userId = jwtUserDetails.getUserId();
+        return postService.findSearchLogs(userId);
+    }
+
     // 게시글 공개, 비공개 수정
     @PatchMapping("/community/post/{postId}")
     public void togglePostController(@PathVariable Long postId){ postService.togglePostService(postId);}
-
 
     //미분류 게시물 조회
     @GetMapping("/community/post/{userId}")
@@ -54,16 +78,13 @@ public class PostController {
             List<SimpleTourDTO> simpleTourDTOList = tourService.putImage(tourList);
             return simpleTourDTOList;
         }
-
-
     }
 
+    // 게시글 상세 조회
     @GetMapping("/community/post")
-    public DetailIncompletedTourDTO getDetailPostController(
-            @RequestParam Long tourId){
+    public DetailIncompletedTourDTO getDetailPostController(@RequestParam Long tourId){
 
         Tour tour = tourService.getTour(tourId);
-
         Post post = tour.getPost();
         List<TourImages> tourImagesList = new ArrayList<>();
         tourImagesList.add(tourImageService.getThumbnailDetail(tourId));
@@ -79,31 +100,35 @@ public class PostController {
                 .build();
     }
 
+    // 나의 게시글 조회
     @GetMapping("/community/mypost")
     public List<PostDTO>getMyAllPostController(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
-
         Long myId = jwtUserDetails.getUserId();
         return postService.getMyAllPostService(myId);
-
-
     }
 
+    // 댓글 달기
     @PostMapping("/community/board/{postId}/comment")
     public void postComments(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable(value = "postId") Long postId, @RequestBody CommentsRequestDTO.postComments postComments){
         Long userId = jwtUserDetails.getUserId();
-        System.out.println("userId = " + userId);
         commentsService.postComments(postId, userId, postComments);
     }
+
+    // 게시글 좋아요
     @PostMapping("/community/comment/{commentId}/likes")
     public void likeComments(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable(value = "commentId") Long commentId){
         Long userId = jwtUserDetails.getUserId();
         commentsService.likeComments(commentId, userId);
     }
+
+    // 댓글 달기
     @PostMapping("/community/comment/{commentId}")
     public void postCommentReply(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable(value = "commentId") Long commentId, @RequestBody CommentsRequestDTO.postComments postComments){
         Long userId = jwtUserDetails.getUserId();
         commentsService.postReply(userId, commentId, postComments);
     }
+
+    // 대댓글 달기
     @PostMapping("/community/reply/{replyId}/likes")
     public void likeReply(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable(value = "replyId") Long replyId){
         Long userId = jwtUserDetails.getUserId();

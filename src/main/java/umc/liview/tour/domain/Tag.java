@@ -18,7 +18,6 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
-
     @Column(name = "name")
     private String name;
 
@@ -26,11 +25,9 @@ public class Tag {
     @OneToMany(mappedBy = "tag")
     private List<TourTags> tourTags = new ArrayList<>();
 
-
     public static Tag toTagEntity(String hashtag){
         return Tag.builder()
                 .name(hashtag)
                 .build();
     }
-
 }
