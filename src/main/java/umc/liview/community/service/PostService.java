@@ -94,6 +94,7 @@ public class PostService {
         postRepository.save(post);
     }
 
+    @Transactional
     public List<PostDTO> getMyAllPostService(Long myId) {
         List<PostDTO> postDTOList = new ArrayList<>();
 
