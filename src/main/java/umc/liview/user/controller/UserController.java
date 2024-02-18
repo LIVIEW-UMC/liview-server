@@ -11,9 +11,7 @@ import umc.liview.user.service.UserService;
 
 @RestController //레스트 컨트롤러
 @RequiredArgsConstructor
-//@RequestMapping("/follow") // 대표주소 설정
 public class UserController {
-    // 생성자 방식인데 빌더로 바꿔보자 담에
     private final UserService userService;
 
     @PostMapping("/follow/{follower_id}")
@@ -66,5 +64,10 @@ public class UserController {
     public void deleteUser(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
         Long userId = jwtUserDetails.getUserId();
         userService.deleteUser(userId);
+    }
+
+    @GetMapping("/users/myId")
+    public Long getMyIdController(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
+        return jwtUserDetails.getUserId();
     }
 }

@@ -255,4 +255,5 @@ public class TourService {
         return DetailIncompletedTourDTO.detailIncompletedTourDTO(tour,tagService.getHashtag(tourId),tourImagesList);
 
     }
+
 }

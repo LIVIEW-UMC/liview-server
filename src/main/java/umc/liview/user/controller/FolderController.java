@@ -34,19 +34,7 @@ public class FolderController {
             @AuthenticationPrincipal JwtUserDetails jwtUserDetails
     ){
         Long myId = jwtUserDetails.getUserId();
-
-        if (myId.equals(userId)) {
-
-            List<Tour> tourList = folderService.getMyFolderDetailService(folderId);
-            List<SimpleTourDTO> simpleTourDTOList = tourService.putImage(tourList);
-            return simpleTourDTOList;
-
-        }
-        else {
-            List<Tour> tourList = folderService.getOtherFolderDetailService(folderId);
-            List<SimpleTourDTO> simpleTourDTOList = tourService.putImage(tourList);
-            return simpleTourDTOList;
-        }
+        return folderService.getFolderDetailService(myId,folderId,userId);
 
     }
 

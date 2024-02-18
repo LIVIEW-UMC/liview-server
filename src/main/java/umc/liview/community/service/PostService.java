@@ -16,8 +16,13 @@ import umc.liview.exception.BusinessException;
 import umc.liview.exception.NotFoundException;
 import umc.liview.exception.code.ErrorCode;
 import umc.liview.tour.domain.Tour;
+import umc.liview.tour.domain.TourImages;
+import umc.liview.tour.dto.DetailIncompletedTourDTO;
+import umc.liview.tour.dto.SimpleTourDTO;
 import umc.liview.tour.repository.TourRepository;
+import umc.liview.tour.service.TagService;
 import umc.liview.tour.service.TourImageService;
+import umc.liview.tour.service.TourService;
 import umc.liview.user.domain.User;
 import umc.liview.user.domain.UserRepository;
 
@@ -33,6 +38,7 @@ public class PostService {
     private final PostJpaRepository postJpaRepository;
     private final TourImageService tourImageService;
     private final PostRedisRepository postRedisRepository;
+    private final TagService tagService;
 
     @Transactional
     public Post createPost(Long userId) {
@@ -148,5 +154,67 @@ public class PostService {
             case "views" -> postJpaRepository.findPostsSortedByViews(page);
             default -> throw new BusinessException(ErrorCode.INVALID_REQUEST_PARAMETER);
         };
+    }
+
+    @Transactional
+    public List<SimpleTourDTO> getNonClassPostService(Long myId, Long userId) {
+        //내 거 조회 -> 전체
+        if (myId.equals(userId)) {
+            List<Tour> tourList = getMyNonClassPost(myId);
+            return putImage(tourList);
+
+        }
+        //상대거 조회 공개만 조회
+        else{
+            List<Tour> tourList = getOtherNonClassPost(userId);
+            return putImage(tourList);
+
+        }
+
+    }
+
+
+    @Transactional
+    public Tour getTour(Long tourId) {
+        return tourRepository.getReferenceById(tourId);
+    }
+
+
+
+    @Transactional
+    public List<SimpleTourDTO> putImage(List<Tour> tourList){
+        List<SimpleTourDTO> simpleTourDTOList = new ArrayList<>();
+        if (!tourList.isEmpty()) {
+            for(Tour tour : tourList){
+                simpleTourDTOList.add(
+                        SimpleTourDTO.builder()
+                                .tourId(tour.getId())
+                                .title(tour.getTitle())
+                                .localDateTime(tour.getCreatedAt())
+                                .imageURL(tourImageService.getThumbnail(tour))
+                                .size(tour.getSize())
+                                .build());
+            }
+        }
+        return simpleTourDTOList;
+    }
+
+    @Transactional
+    public DetailIncompletedTourDTO getDetailPostService(Long tourId) {
+
+        Tour tour = getTour(tourId);
+        Post post = tour.getPost();
+        List<TourImages> tourImagesList = new ArrayList<>();
+        tourImagesList.add(tourImageService.getThumbnailDetail(tourId));
+        tourImagesList.addAll(tourImageService.getNotThumbailDetail(tourId));
+        increaseViewCount(post);
+
+        return DetailIncompletedTourDTO.builder()
+                .tourId(tourId)
+                .contents(tour.getContents())
+                .title(tour.getTitle())
+                .hashtag(tagService.getHashtag(tourId))
+                .imgList(tourImagesList)
+                .build();
     }
 }
