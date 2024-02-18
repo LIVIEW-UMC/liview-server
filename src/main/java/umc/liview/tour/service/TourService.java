@@ -256,4 +256,9 @@ public class TourService {
 
     }
 
+    @Transactional
+    public Long getPostIdService(Long tourId) {
+        Tour tour = tourRepository.getReferenceById(tourId);
+        return tour.getPost().getId();
+    }
 }

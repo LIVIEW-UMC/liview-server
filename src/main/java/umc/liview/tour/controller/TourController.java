@@ -40,6 +40,14 @@ public class TourController {
 
     }
 
+
+
+    @GetMapping("/community/postId/{tourId}")
+    public Long getPostIdController(@AuthenticationPrincipal JwtUserDetails jwtUserDetails,@PathVariable Long tourId
+    ){
+        return tourservice.getPostIdService(tourId);
+    }
+
     // 미완성 일정 리스트 조회
     @GetMapping("/tours/incompleted/simple")
     public List<SimpleTourDTO> getAllInCompletedTourController(
