@@ -20,22 +20,17 @@ public class AuthController {
     private final AuthService authService;
     private final UserDtoMapper mapper;
 
-    @GetMapping("/{socialType}/login")
+    @GetMapping("/auth/{socialType}/login")
     public void oauth2Login(HttpServletResponse response, @PathVariable(name = "socialType") String socialLoginPath) throws IOException {
         response.sendRedirect("https://jin-myserver.shop/oauth2/authorization/" + socialLoginPath);
     }
 
-    @GetMapping("/")
-    public TokenResponse login(@RequestParam String access_token, @RequestParam String refresh_token) {
-        return new TokenResponse(access_token, refresh_token);
-    }
-
-    @PostMapping("/reissue")
+    @PostMapping("/auth/reissue")
     public TokenResponse reissue(@Valid @RequestBody TokenReissueDto tokenReissueDto) {
         return authService.reissue(mapper.toCommand(tokenReissueDto));
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/auth/logout")
     public void logout(@AuthenticationPrincipal JwtUserDetails userDetails) {
         authService.logout(userDetails.getUserId());
     }
