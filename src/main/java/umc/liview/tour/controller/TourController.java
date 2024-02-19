@@ -2,15 +2,12 @@ package umc.liview.tour.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import umc.liview.community.domain.Post;
 import umc.liview.community.service.PostService;
 import umc.liview.config.auth.JwtUserDetails;
 import umc.liview.tour.domain.Tour;
-import umc.liview.tour.domain.TourImages;
 import umc.liview.tour.dto.*;
 import umc.liview.tour.service.TagService;
 import umc.liview.tour.service.TourImageService;
@@ -41,6 +38,14 @@ public class TourController {
         Long userId = jwtUserDetails.getUserId();
         tourservice.makeTourService(tourRequestDTO, multipartFileList,tourRequestDTO.getImageMetadataDTOList(),userId);
 
+    }
+
+
+
+    @GetMapping("/community/postId/{tourId}")
+    public Long getPostIdController(@AuthenticationPrincipal JwtUserDetails jwtUserDetails,@PathVariable Long tourId
+    ){
+        return tourservice.getPostIdService(tourId);
     }
 
     // 미완성 일정 리스트 조회

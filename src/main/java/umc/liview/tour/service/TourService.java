@@ -104,7 +104,7 @@ public class TourService {
 
         User user = userRepository.getReferenceById(userId);
 
-
+    //임시저장된 지도를 수정할 때
     if (tourRequestDTO.getTourId() != null){
         Optional<Tour> tourTemp = tourRepository.findById(tourRequestDTO.getTourId());
         Tour tour = tourTemp.get();
@@ -256,4 +256,9 @@ public class TourService {
 
     }
 
+    @Transactional
+    public Long getPostIdService(Long tourId) {
+        Tour tour = tourRepository.getReferenceById(tourId);
+        return tour.getPost().getId();
+    }
 }
