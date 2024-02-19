@@ -15,6 +15,7 @@ import umc.liview.config.jwt.JwtException;
 import umc.liview.exception.NotFoundException;
 import umc.liview.exception.code.ErrorCode;
 
+import java.awt.*;
 import java.security.Key;
 import java.util.Optional;
 

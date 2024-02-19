@@ -36,7 +36,7 @@ public class WebSecurityConfig {
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAccessDeniedHandler accessDeniedHandler;
 
-    private static final String[] AUTH_BLACKLIST = {"/users**", "/tours**", "/follow**", "/community**"};
+    private static final String[] AUTH_BLACKLIST = {"/users", "/users/**", "/tours", "/tours**", "/follow", "/follow/**", "/community", "/community/**"};
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
