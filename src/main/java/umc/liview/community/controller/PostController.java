@@ -79,12 +79,14 @@ public class PostController {
     }
 
 
+    //게시물 좋아요
     @PostMapping("/community/post/{postId}/likes")
     public void likePost(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable Long postId){
         Long userId = jwtUserDetails.getUserId();
         postService.likePost(postId, userId);
     }
 
+    //특정 유저가 게시물 좋아요 했는지 판단
     @GetMapping("/community/post/{postId}/likes")
     public String likeStatusController(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable Long postId){
         Long userId = jwtUserDetails.getUserId();

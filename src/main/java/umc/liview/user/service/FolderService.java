@@ -138,6 +138,9 @@ public class FolderService {
     @Transactional
     public void addTourService(Long tourId, Long folderId) {
         Tour tour = tourRepository.getReferenceById(tourId);
+        tour.changeClassfied(true);
+        tourRepository.save(tour);
+
         Folder folder = folderRepository.getReferenceById(folderId);
 
         tourService.classfiedTour(tour,folder);

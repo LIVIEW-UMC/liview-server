@@ -60,8 +60,10 @@ public class TourService {
     //폴더 저장 로직!
     // i) DTO가 Compelete 라면
     // ii) classfiedTour 실행 folder와 tour 기입
+    @Transactional
     public void classfiedTour(Tour tour, Folder folder)
     {
+
         storedToursRepository.save(StoredTours.builder()
                         .tourId(tour.getId())
                         .folder(folder)
