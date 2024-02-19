@@ -78,6 +78,20 @@ public class PostController {
         return postService.getMyAllPostService(myId);
     }
 
+
+    @PostMapping("/community/post/{postId}/likes")
+    public void likePost(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable Long postId){
+        Long userId = jwtUserDetails.getUserId();
+        postService.likePost(postId, userId);
+    }
+
+    @GetMapping("/community/post/{postId}/likes")
+    public String likeStatusController(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable Long postId){
+        Long userId = jwtUserDetails.getUserId();
+        return postService.likeStatusService(postId,userId);
+    }
+
+
     // 댓글 달기
     @PostMapping("/community/board/{postId}/comment")
     public void postComments(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @PathVariable(value = "postId") Long postId, @RequestBody CommentsRequestDTO.postComments postComments){

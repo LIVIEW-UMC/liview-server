@@ -3,8 +3,10 @@ package umc.liview.community.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.liview.community.domain.Likes;
 import umc.liview.community.domain.Post;
 import umc.liview.community.dto.PostDTO;
+import umc.liview.community.repository.LikesRepository;
 import umc.liview.community.repository.PostJpaRepository;
 import umc.liview.community.repository.PostRedisRepository;
 import umc.liview.community.repository.PostRepository;
@@ -26,6 +28,7 @@ import umc.liview.user.domain.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +39,9 @@ public class PostService {
     private final PostJpaRepository postJpaRepository;
     private final TourImageService tourImageService;
     private final PostRedisRepository postRedisRepository;
-    private final PostCommandMapper mapper;=
+    private final PostCommandMapper mapper;
     private final TagService tagService;
+    private final LikesRepository likesRepository;
 
     @Transactional
     public Post createPost(Long userId) {
@@ -98,9 +102,8 @@ public class PostService {
         List<PostDTO> postDTOList = new ArrayList<>();
 
         List<Tour> tourList = tourRepository.findAllByUserIdAndCompleteStatus(myId, Tour.CompleteStatus.COMPLETE);
-
         for (Tour tour : tourList) {
-            PostDTO postDTO = PostDTO.toPostDTO(tour, tourImageService.getThumbnail(tour), tour.getPost().getViewCounts());
+            PostDTO postDTO = PostDTO.toPostDTO(tour, tourImageService.getThumbnail(tour), tour.getPost());
             postDTOList.add(postDTO);
         }
 
@@ -225,4 +228,29 @@ public class PostService {
     }
 
 
+    @Transactional
+    public void likePost(Long postId, Long userId) {
+        Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException("post not found"));
+        User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("user not found"));
+
+        Optional<Likes> existingLikes = likesRepository.findByPostAndUserId(post,userId);
+        if(existingLikes.isPresent()) {
+            likesRepository.delete(existingLikes.get());
+
+        }else {
+            likesRepository.save(new Likes(userId, post));
+        }
+    }
+
+    @Transactional
+    public String likeStatusService(Long postId,Long userId) {
+        Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException("post not found"));
+        Optional<Likes> existingLikes = likesRepository.findByPostAndUserId(post,userId);
+        if(existingLikes.isPresent()) {
+            return "true";
+        }else {
+            return "false";
+        }
+
+    }
 }
