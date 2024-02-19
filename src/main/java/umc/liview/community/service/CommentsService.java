@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.liview.community.converter.CommentsConverter;
 import umc.liview.community.domain.*;
 import umc.liview.community.dto.CommentsRequestDTO;
+import umc.liview.community.dto.CommentsResponseDTO;
 import umc.liview.community.repository.*;
 import umc.liview.exception.NotFoundException;
 import umc.liview.exception.code.ErrorCode;
@@ -13,6 +14,7 @@ import umc.liview.user.domain.User;
 import umc.liview.user.domain.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
