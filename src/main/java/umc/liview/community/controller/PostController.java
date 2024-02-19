@@ -29,9 +29,6 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final TourService tourService;
-    private final TourImageService tourImageService;
-    private final TagService tagService;
     private final CommentsService commentsService;
 
     // 게시글 조회 - 조회순, 최신순
@@ -62,41 +59,16 @@ public class PostController {
     //미분류 게시물 조회
     @GetMapping("/community/post/{userId}")
     public List<SimpleTourDTO> getNonClassPostController(@PathVariable Long userId, @AuthenticationPrincipal JwtUserDetails jwtUserDetails ){
-
         Long myId = jwtUserDetails.getUserId();
-        //내 거 조회 -> 전체
-        if (myId.equals(userId)) {
-            List<Tour> tourList = postService.getMyNonClassPost(myId);
-            List<SimpleTourDTO> simpleTourDTOList = tourService.putImage(tourList);
-            return simpleTourDTOList;
-        }
 
-        //상대거 조회 공개만 조회
-        else{
-            List<Tour> tourList = postService.getOtherNonClassPost(userId);
-            List<SimpleTourDTO> simpleTourDTOList = tourService.putImage(tourList);
-            return simpleTourDTOList;
-        }
+        return postService.getNonClassPostService(myId,userId);
     }
 
     // 게시글 상세 조회
     @GetMapping("/community/post")
-    public DetailIncompletedTourDTO getDetailPostController(@RequestParam Long tourId){
+    public DetailIncompletedTourDTO getDetailPostController(@RequestParam Long tourId,@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
+        return postService.getDetailPostService(tourId);
 
-        Tour tour = tourService.getTour(tourId);
-        Post post = tour.getPost();
-        List<TourImages> tourImagesList = new ArrayList<>();
-        tourImagesList.add(tourImageService.getThumbnailDetail(tourId));
-        tourImagesList.addAll(tourImageService.getNotThumbailDetail(tourId));
-        postService.increaseViewCount(post);
-
-        return DetailIncompletedTourDTO.builder()
-                .tourId(tourId)
-                .contents(tour.getContents())
-                .title(tour.getTitle())
-                .hashtag(tagService.getHashtag(tourId))
-                .imgList(tourImagesList)
-                .build();
     }
 
     // 나의 게시글 조회

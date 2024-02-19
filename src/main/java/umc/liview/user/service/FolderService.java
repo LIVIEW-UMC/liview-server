@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.liview.community.domain.Post;
 import umc.liview.tour.domain.Tour;
+import umc.liview.tour.dto.SimpleTourDTO;
 import umc.liview.tour.repository.TourRepository;
 import umc.liview.tour.service.TourService;
 import umc.liview.user.domain.*;
@@ -145,5 +146,23 @@ public class FolderService {
     @Transactional
     public void deleteTourService(Long tourId, Long folderId) {
         storedToursRepository.deleteByTourIdAndFolderId(tourId,folderId);
+    }
+
+    @Transactional
+    public List<SimpleTourDTO> getFolderDetailService(Long myId,Long folderId,Long userId) {
+        if (myId.equals(userId)) {
+
+            List<Tour> tourList = getMyFolderDetailService(folderId);
+            List<SimpleTourDTO> simpleTourDTOList = tourService.putImage(tourList);
+            return simpleTourDTOList;
+
+        }
+        else {
+            List<Tour> tourList = getOtherFolderDetailService(folderId);
+            List<SimpleTourDTO> simpleTourDTOList = tourService.putImage(tourList);
+            return simpleTourDTOList;
+        }
+
+
     }
 }

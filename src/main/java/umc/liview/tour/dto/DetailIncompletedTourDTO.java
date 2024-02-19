@@ -19,4 +19,13 @@ public class DetailIncompletedTourDTO {
     private List<TourImages> imgList;
 
 
+    public static DetailIncompletedTourDTO detailIncompletedTourDTO(Tour tour,List<String> hashtag,List<TourImages> tourImagesList){
+        return DetailIncompletedTourDTO.builder()
+                .tourId(tour.getId())
+                .contents(tour.getContents())
+                .title(tour.getTitle())
+                .hashtag(hashtag)
+                .imgList(tourImagesList)
+                .build();
+    }
 }
