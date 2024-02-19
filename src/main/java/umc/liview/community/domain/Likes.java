@@ -19,4 +19,10 @@ public class Likes {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @Builder
+    public Likes(long userId, Post post){
+        this.userId = userId;
+        this.post = post;
+    }
 }

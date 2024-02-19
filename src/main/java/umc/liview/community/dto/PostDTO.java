@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.liview.community.domain.Post;
 import umc.liview.tour.domain.Tour;
 
 import java.time.LocalDateTime;
@@ -18,23 +19,22 @@ public class PostDTO {
     private String startDate;
     private String endDate;
     private int viewCount;
-    private Long likeCount;
-    private Long commentCount;
+    private int likeCount;
+    private int commentCount;
 
     @Builder
-    public PostDTO(Long tourId,String title,String imageURL,String startDate,String endDate,int viewCount){
+    public PostDTO(Long tourId,String title,String imageURL,String startDate,String endDate,int viewCount,int likeCount){
             this.tourId=tourId;
             this.title=title;
             this.imageURL = imageURL;
             this.startDate = startDate;
             this.endDate = endDate;
             this.viewCount = viewCount;
-            this.commentCount = 0L;
-            this.likeCount = 0L;
+            this.commentCount = 0;
+            this.likeCount = likeCount;
     }
 
-    public static PostDTO toPostDTO(Tour tour,String imageURL,int viewCount){
-
+    public static PostDTO toPostDTO(Tour tour, String imageURL, Post post){
 
         return PostDTO.builder()
                 .endDate(tour.getEndDay())
@@ -42,7 +42,8 @@ public class PostDTO {
                 .imageURL(imageURL)
                 .tourId(tour.getId())
                 .startDate(tour.getStartDay())
-                .viewCount(viewCount)
+                .viewCount(post.getViewCounts())
+                .likeCount(post.getLikes().size())
                 .build();
     }
 }
