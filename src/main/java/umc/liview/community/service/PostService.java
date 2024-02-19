@@ -253,4 +253,10 @@ public class PostService {
         }
 
     }
+
+    @Transactional
+    public Long getUserId(Long tourId) {
+        Tour tour = tourRepository.getReferenceById(tourId);
+        return tour.getUser().getId();
+    }
 }
