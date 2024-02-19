@@ -18,7 +18,7 @@ public class PostJpaRepository {
     // 게시글 조회- 날짜순
     public List<PostInfo> findPostsSortedByDate(int page) {
         return em.createQuery(
-                "select new umc.liview.community.service.dto.response.PostInfo(t.post.id, ti.imageUrl)" +
+                "select new umc.liview.community.service.dto.response.PostInfo(t.post.id, t.id, ti.imageUrl)" +
                             " from Tour t" +
                             " join t.tourImages ti" +
                             " left join t.post p" +
@@ -33,7 +33,7 @@ public class PostJpaRepository {
     // 게시글 조회 - 조회순
     public List<PostInfo> findPostsSortedByViews(int page) {
         return em.createQuery(
-                "select new umc.liview.community.service.dto.response.PostInfo(t.post.id, ti.imageUrl)" +
+                "select new umc.liview.community.service.dto.response.PostInfo(t.post.id, t.id, ti.imageUrl)" +
                             " from Tour t" +
                             " join t.tourImages ti" +
                             " left join t.post p" +
@@ -63,7 +63,7 @@ public class PostJpaRepository {
     // 일정 -> 게시글 검색(생성일)
     public List<PostInfo> searchPostsByDate(List<Long> tourIds) {
         return em.createQuery(
-                "select new umc.liview.community.service.dto.response.PostInfo(t.post.id, ti.imageUrl)" +
+                "select new umc.liview.community.service.dto.response.PostInfo(t.post.id, t.id, ti.imageUrl)" +
                             " from Tour t" +
                             " join t.tourImages ti" +
                             " left join t.post p" +
@@ -78,7 +78,7 @@ public class PostJpaRepository {
     // 일정 -> 게시글 검색(조회수)
     public List<PostInfo> searchPostsByViews(List<Long> tourIds) {
         return em.createQuery(
-                "select new umc.liview.community.service.dto.response.PostInfo(t.post.id, ti.imageUrl)" +
+                "select new umc.liview.community.service.dto.response.PostInfo(t.post.id, t.id, ti.imageUrl)" +
                             " from Tour t" +
                             " join t.tourImages ti" +
                             " left join t.post p" +
