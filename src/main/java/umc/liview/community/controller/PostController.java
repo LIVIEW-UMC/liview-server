@@ -10,7 +10,6 @@ import umc.liview.community.dto.CommentsRequestDTO;
 import umc.liview.community.dto.PostDTO;
 import umc.liview.community.service.CommentsService;
 import umc.liview.community.service.PostService;
-import umc.liview.community.service.dto.request.SearchLog;
 import umc.liview.community.service.dto.response.PostInfo;
 import umc.liview.config.auth.JwtUserDetails;
 import umc.liview.tour.domain.Tour;
@@ -51,7 +50,7 @@ public class PostController {
 
     // 검색기록 조회
     @GetMapping("/community/search/log")
-    public List<SearchLog> findSearchLogs(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+    public List<String> findSearchLogs(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         Long userId = jwtUserDetails.getUserId();
         return postService.findSearchLogs(userId);
     }

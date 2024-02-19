@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static umc.liview.user.domain.User.*;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuthLoader implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -25,6 +26,7 @@ public class OAuthLoader implements OAuth2UserService<OAuth2UserRequest, OAuth2U
         // 연동된 OAuth2.0 회원정보 가져오기
         OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
+        log.info(String.valueOf(oAuth2User));
 
         // 연동된 소셜(Kakao, Naver 등) + 사용자 속성 가져오기
         String registrationId = getOAuthServiceName(userRequest);
