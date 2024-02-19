@@ -1,8 +1,6 @@
 package umc.liview.community.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.liview.community.domain.Post;
@@ -10,7 +8,7 @@ import umc.liview.community.dto.PostDTO;
 import umc.liview.community.repository.PostJpaRepository;
 import umc.liview.community.repository.PostRedisRepository;
 import umc.liview.community.repository.PostRepository;
-import umc.liview.community.service.dto.request.SearchLog;
+import umc.liview.community.service.dto.PostCommandMapper;
 import umc.liview.community.service.dto.response.PostInfo;
 import umc.liview.exception.BusinessException;
 import umc.liview.exception.NotFoundException;
@@ -38,6 +36,7 @@ public class PostService {
     private final PostJpaRepository postJpaRepository;
     private final TourImageService tourImageService;
     private final PostRedisRepository postRedisRepository;
+    private final PostCommandMapper mapper;=
     private final TagService tagService;
 
     @Transactional
@@ -121,15 +120,21 @@ public class PostService {
     public List<PostInfo> searchPostInfos(Long userId, String searchValue, String sortedBy, int page) {
         // 검색기록 저장
         User user = verifyAndFindUser(userId);
-        postRedisRepository.saveSearchLog(user.getId(), new SearchLog(searchValue));
+//        saveSearchedLog(user, searchValue);
         // 검색
         List<Long> searchedTours = searchTours(searchValue, page);
         return searchPosts(searchedTours, sortedBy);
     }
 
     // 검색기록 조회
-    public List<SearchLog> findSearchLogs(Long userId) {
-        return postRedisRepository.findRecentSearchLogs(userId);
+    @Transactional
+    public List<String> findSearchLogs(Long userId) {
+//        return postRedisRepository.findRecentSearchLogs(userId);
+        return null;
+    }
+
+    private void saveSearchedLog(User user, String searchValue) {
+        postRedisRepository.saveSearchValue(user.getId(), mapper.toCommand(searchValue));
     }
 
     private User verifyAndFindUser(Long userId) {

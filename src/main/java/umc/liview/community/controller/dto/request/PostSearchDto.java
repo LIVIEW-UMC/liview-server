@@ -1,4 +1,8 @@
 package umc.liview.community.controller.dto.request;
 
-public record PostSearchDto(String searchValue, String sortedBy) {
+import jakarta.validation.constraints.NotNull;
+
+public record PostSearchDto(
+        @NotNull(message = "searchValue is null") String searchValue,
+        @NotNull(message = "sortedBy is null") String sortedBy) {
 }
