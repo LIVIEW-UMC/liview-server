@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
 
-    private final LocalDateTime timestamp = LocalDateTime.now();
     private final int status;
     private final String error;
     private final String code;
@@ -58,7 +57,6 @@ public class ErrorResponse {
     @Override
     public String toString() {
         return "{\n" +
-                "    \"timestamp\":" + timestamp + ",\n" +
                 "    \"status\":" + status + ",\n" +
                 "    \"error\":\"" + error + "\",\n" +
                 "    \"code\":\"" + code + "\",\n" +
