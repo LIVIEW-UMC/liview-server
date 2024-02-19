@@ -71,6 +71,11 @@ public class PostController {
 
     }
 
+    @GetMapping("/community/userId/{tourId}")
+    public Long getUserIdController(@AuthenticationPrincipal JwtUserDetails jwtUserDetails,@PathVariable Long tourId){
+        return postService.getUserId(tourId);
+    }
+
     // 나의 게시글 조회
     @GetMapping("/community/mypost")
     public List<PostDTO>getMyAllPostController(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
