@@ -28,6 +28,11 @@ public class UserController {
         return userService.getSimpleProfile(userId);
     }
 
+    @GetMapping("/users/{userId}")
+    public UserResponseDTO.SimpleProfile userSimple(@PathVariable("userId") Long userId){
+        return userService.getSimpleProfile(userId);
+    }
+
     @GetMapping("/users/detail")
     public UserResponseDTO.UserProfile userProfile(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
         Long userId = jwtUserDetails.getUserId();
