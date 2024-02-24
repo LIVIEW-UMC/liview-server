@@ -7,8 +7,8 @@ import umc.liview.community.domain.Likes;
 import umc.liview.community.domain.Post;
 import umc.liview.community.dto.PostDTO;
 import umc.liview.community.repository.LikesRepository;
-import umc.liview.community.repository.PostJpaRepository;
-import umc.liview.community.repository.PostRedisRepository;
+import umc.liview.community.repository.adapter.PostJpaAdapter;
+import umc.liview.community.repository.adapter.PostRedisAdapter;
 import umc.liview.community.repository.PostRepository;
 import umc.liview.community.service.dto.PostCommandMapper;
 import umc.liview.community.service.dto.response.PostInfo;
@@ -22,7 +22,6 @@ import umc.liview.tour.dto.SimpleTourDTO;
 import umc.liview.tour.repository.TourRepository;
 import umc.liview.tour.service.TagService;
 import umc.liview.tour.service.TourImageService;
-import umc.liview.tour.service.TourService;
 import umc.liview.user.domain.User;
 import umc.liview.user.domain.UserRepository;
 
@@ -36,9 +35,9 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final TourRepository tourRepository;
-    private final PostJpaRepository postJpaRepository;
+    private final PostJpaAdapter postJpaAdapter;
     private final TourImageService tourImageService;
-    private final PostRedisRepository postRedisRepository;
+    private final PostRedisAdapter postRedisAdapter;
     private final PostCommandMapper mapper;
     private final TagService tagService;
     private final LikesRepository likesRepository;
@@ -123,7 +122,10 @@ public class PostService {
     public List<PostInfo> searchPostInfos(Long userId, String searchValue, String sortedBy, int page) {
         // 검색기록 저장
         User user = verifyAndFindUser(userId);
-//        saveSearchedLog(user, searchValue);
+        postRedisAdapter.addSearchedLog(userId, 1L, 10D);
+        postRedisAdapter.addSearchedLog(userId, 2L, 30D);
+        postRedisAdapter.addSearchedLog(userId, 3L, 20D);
+
         // 검색
         List<Long> searchedTours = searchTours(searchValue, page);
         return searchPosts(searchedTours, sortedBy);
@@ -137,7 +139,7 @@ public class PostService {
     }
 
     private void saveSearchedLog(User user, String searchValue) {
-        postRedisRepository.saveSearchValue(user.getId(), mapper.toCommand(searchValue));
+//        postRedisAdapter.saveSearchValue(user.getId(), mapper.toCommand(searchValue));
     }
 
     private User verifyAndFindUser(Long userId) {
@@ -146,21 +148,21 @@ public class PostService {
     }
 
     private List<Long> searchTours(String searchValue, int page) {
-        return postJpaRepository.searchTours(page, searchValue);
+        return postJpaAdapter.searchTours(page, searchValue);
     }
 
     private List<PostInfo> searchPosts(List<Long> searchedTourIds, String sortedBy) {
         return switch (sortedBy) {
-            case "date" -> postJpaRepository.searchPostsByDate(searchedTourIds);
-            case "views" -> postJpaRepository.searchPostsByViews(searchedTourIds);
+            case "date" -> postJpaAdapter.searchPostsByDate(searchedTourIds);
+            case "views" -> postJpaAdapter.searchPostsByViews(searchedTourIds);
             default -> throw new BusinessException(ErrorCode.INVALID_REQUEST_PARAMETER);
         };
     }
 
     private List<PostInfo> findPosts(String sortedBy, int page) {
         return switch (sortedBy) {
-            case "date" -> postJpaRepository.findPostsSortedByDate(page);
-            case "views" -> postJpaRepository.findPostsSortedByViews(page);
+            case "date" -> postJpaAdapter.findPostsSortedByDate(page);
+            case "views" -> postJpaAdapter.findPostsSortedByViews(page);
             default -> throw new BusinessException(ErrorCode.INVALID_REQUEST_PARAMETER);
         };
     }

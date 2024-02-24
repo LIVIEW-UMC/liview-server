@@ -1,4 +1,4 @@
-package umc.liview.community.repository;
+package umc.liview.community.repository.adapter;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class PostJpaRepository {
+public class PostJpaAdapter {
 
     private final EntityManager em;
 
