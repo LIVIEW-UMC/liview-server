@@ -46,11 +46,10 @@ public class PostController {
         return postService.searchPostInfos(userId, postSearchDto.searchValue(), postSearchDto.sortedBy(), page);
     }
 
-    // 검색기록 조회
-    @GetMapping("/community/search/log")
-    public List<String> findSearchLogs(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
-        Long userId = jwtUserDetails.getUserId();
-        return postService.findSearchLogs(userId);
+    // 검색기록 랭킹 조회
+    @GetMapping("/community/search/rank")
+    public List<String> findSearchedLogRanks() {
+        return postService.findSearchLogs();
     }
 
     // 게시글 공개, 비공개 수정
@@ -69,7 +68,6 @@ public class PostController {
     @GetMapping("/community/post")
     public DetailIncompletedTourDTO getDetailPostController(@RequestParam Long tourId,@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
         return postService.getDetailPostService(tourId);
-
     }
 
     @GetMapping("/community/userId/{tourId}")

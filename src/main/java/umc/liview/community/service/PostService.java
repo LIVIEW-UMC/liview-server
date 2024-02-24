@@ -28,7 +28,6 @@ import umc.liview.user.domain.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -108,11 +107,10 @@ public class PostService {
         }
 
         return postDTOList;
-
     }
 
     // 게시글 조회 - 시간순, 조회수
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PostInfo> findPostInfos(Long userId, String sortedBy, int page) {
         verifyAndFindUser(userId);
         return findPosts(sortedBy, page);
@@ -121,22 +119,32 @@ public class PostService {
     // 게시글 검색 - 시간순, 조회수
     @Transactional
     public List<PostInfo> searchPostInfos(Long userId, String searchValue, String sortedBy, int page) {
-        // 검색기록 저장
+        // 검색어 저장
         verifyAndFindUser(userId);
-        postRedisAdapter.addSearchedLog(userId, searchValue);
+        saveUserSearchedWord(userId, searchValue);
+        saveSearchedWordToRanks(searchValue);
+
         // 검색
         List<Long> searchedTours = searchTours(searchValue, page);
         return searchPosts(searchedTours, sortedBy);
     }
 
-    // 검색기록 조회
-    @Transactional
-    public List<String> findSearchLogs(Long userId) {
-        return postRedisAdapter.findSearchedLogs(userId);
+    // 검색어 랭킹 조회
+    @Transactional(readOnly = true)
+    public List<String> findSearchLogs() {
+        return findMostSearchedWord();
     }
 
-    private void saveSearchedLog(User user, String searchValue) {
-//        postRedisAdapter.saveSearchValue(user.getId(), mapper.toCommand(searchValue));
+    private List<String> findMostSearchedWord() {
+        return postRedisAdapter.getTopSearchedLogs(10);
+    }
+
+    private void saveSearchedWordToRanks(String searchValue) {
+        postRedisAdapter.addLogsToTopRank(searchValue);
+    }
+
+    private void saveUserSearchedWord(Long userId, String searchValue) {
+        postRedisAdapter.addSearchedLog(userId, searchValue);
     }
 
     private User verifyAndFindUser(Long userId) {

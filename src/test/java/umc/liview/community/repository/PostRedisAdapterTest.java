@@ -11,11 +11,7 @@ import java.util.List;
 
 @SpringBootTest
 class PostRedisAdapterTest {
-    private final Long firstTourId = 1L;
-    private final Long secondTourId = 2L;
-    private final Long thirdTourId = 3L;
-    private final Long fourthTourId = 4L;
-    private final Long fifthTourId = 5L;
+
     private final Long userId = 1000L;
 
     @Autowired
@@ -31,15 +27,11 @@ class PostRedisAdapterTest {
         postRedisAdapter.addSearchedLog(userId, "log4");
         postRedisAdapter.addSearchedLog(userId, "log5");
 
-        List<Long> topLogs = postRedisAdapter.getTopSearchedLogs(userId, 3);
+        List<String> topLogs = postRedisAdapter.getTopSearchedLogs(3);
 
-        Assertions.assertEquals(firstTourId, topLogs.get(0));
-        Assertions.assertEquals(secondTourId, topLogs.get(1));
-        Assertions.assertEquals(fifthTourId, topLogs.get(2));
-
-        Assertions.assertEquals(200d, postRedisAdapter.getScore(userId, firstTourId));
-        Assertions.assertEquals(160d, postRedisAdapter.getScore(userId, secondTourId));
-        Assertions.assertEquals(150d, postRedisAdapter.getScore(userId, fifthTourId));
+        Assertions.assertEquals("log1", topLogs.get(0));
+        Assertions.assertEquals("log2", topLogs.get(1));
+        Assertions.assertEquals("log3", topLogs.get(2));
     }
 
 }

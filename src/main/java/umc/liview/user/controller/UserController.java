@@ -9,6 +9,8 @@ import umc.liview.user.dto.UserRequestDTO;
 import umc.liview.user.dto.UserResponseDTO;
 import umc.liview.user.service.UserService;
 
+import java.util.List;
+
 @RestController //레스트 컨트롤러
 @RequiredArgsConstructor
 public class UserController {
@@ -74,5 +76,12 @@ public class UserController {
     @GetMapping("/users/myId")
     public Long getMyIdController(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
         return jwtUserDetails.getUserId();
+    }
+
+    // 검색기록 조회
+    @GetMapping("/users/search/log")
+    public List<String> findSearchLogs(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        Long userId = jwtUserDetails.getUserId();
+        return userService.findSearchLogs(userId);
     }
 }
