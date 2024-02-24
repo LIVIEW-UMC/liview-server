@@ -25,14 +25,11 @@ class PostRedisAdapterTest {
     @Profile("local")
     public void simulate() {
 
-        postRedisAdapter.addSearchedLog(userId, firstTourId, 100d);
-        postRedisAdapter.addSearchedLog(userId, secondTourId, 110d);
-        postRedisAdapter.addSearchedLog(userId, thirdTourId, 120d);
-        postRedisAdapter.addSearchedLog(userId, fourthTourId, 130d);
-        postRedisAdapter.addSearchedLog(userId, fifthTourId, 140d);
-
-        postRedisAdapter.addSearchedLog(userId, secondTourId, 160d);
-        postRedisAdapter.addSearchedLog(userId, firstTourId, 200d);
+        postRedisAdapter.addSearchedLog(userId, "log1");
+        postRedisAdapter.addSearchedLog(userId, "log2");
+        postRedisAdapter.addSearchedLog(userId, "log3");
+        postRedisAdapter.addSearchedLog(userId, "log4");
+        postRedisAdapter.addSearchedLog(userId, "log5");
 
         List<Long> topLogs = postRedisAdapter.getTopSearchedLogs(userId, 3);
 

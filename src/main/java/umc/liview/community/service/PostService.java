@@ -28,6 +28,7 @@ import umc.liview.user.domain.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -121,11 +122,8 @@ public class PostService {
     @Transactional
     public List<PostInfo> searchPostInfos(Long userId, String searchValue, String sortedBy, int page) {
         // 검색기록 저장
-        User user = verifyAndFindUser(userId);
-        postRedisAdapter.addSearchedLog(userId, 1L, 10D);
-        postRedisAdapter.addSearchedLog(userId, 2L, 30D);
-        postRedisAdapter.addSearchedLog(userId, 3L, 20D);
-
+        verifyAndFindUser(userId);
+        postRedisAdapter.addSearchedLog(userId, searchValue);
         // 검색
         List<Long> searchedTours = searchTours(searchValue, page);
         return searchPosts(searchedTours, sortedBy);
@@ -134,8 +132,7 @@ public class PostService {
     // 검색기록 조회
     @Transactional
     public List<String> findSearchLogs(Long userId) {
-//        return postRedisRepository.findRecentSearchLogs(userId);
-        return null;
+        return postRedisAdapter.findSearchedLogs(userId);
     }
 
     private void saveSearchedLog(User user, String searchValue) {
