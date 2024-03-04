@@ -38,7 +38,6 @@ public class PostService {
     private final PostJpaAdapter postJpaAdapter;
     private final TourImageService tourImageService;
     private final PostRedisAdapter postRedisAdapter;
-    private final PostCommandMapper mapper;
     private final TagService tagService;
     private final LikesRepository likesRepository;
 
@@ -216,7 +215,7 @@ public class PostService {
     }
 
     @Transactional
-    public DetailIncompletedTourDTO getDetailPostService(Long tourId) {
+    public DetailIncompletedTourDTO getDetailPostService(Long userId, Long tourId) {
 
         Tour tour = getTour(tourId);
         Post post = tour.getPost();
@@ -224,6 +223,7 @@ public class PostService {
         tourImagesList.add(tourImageService.getThumbnailDetail(tourId));
         tourImagesList.addAll(tourImageService.getNotThumbailDetail(tourId));
         increaseViewCount(post);
+        postRedisAdapter.saveViewedToursId(userId, tourId);
 
         return DetailIncompletedTourDTO.builder()
                 .tourId(tourId)

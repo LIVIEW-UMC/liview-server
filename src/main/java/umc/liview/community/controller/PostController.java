@@ -67,7 +67,8 @@ public class PostController {
     // 게시글 상세 조회
     @GetMapping("/community/post")
     public DetailIncompletedTourDTO getDetailPostController(@RequestParam Long tourId,@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
-        return postService.getDetailPostService(tourId);
+        Long userId = jwtUserDetails.getUserId();
+        return postService.getDetailPostService(userId, tourId);
     }
 
     @GetMapping("/community/userId/{tourId}")

@@ -23,7 +23,7 @@ public class RedisConfig {
         return new LettuceConnectionFactory(host, port);
     }
 
-    // JWT Token Template
+    // Basic String RedisTemplate
     @Bean
     public RedisTemplate<String, String> redisTemplate() {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
@@ -32,16 +32,5 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 
         return redisTemplate;
-    }
-
-    // Caching Template
-    @Bean(name = "cachingRedisTemplate")
-    public RedisTemplate<String, Long> cachingRedisTemplate() {
-        RedisTemplate<String, Long> cachingRedisTemplate = new RedisTemplate<>();
-        cachingRedisTemplate.setKeySerializer(new StringRedisSerializer());
-        cachingRedisTemplate.setValueSerializer(new GenericToStringSerializer<>(Long.class));
-        cachingRedisTemplate.setConnectionFactory(redisConnectionFactory());
-
-        return cachingRedisTemplate;
     }
 }
