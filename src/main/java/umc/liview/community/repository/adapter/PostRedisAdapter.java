@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
@@ -20,7 +19,6 @@ public class PostRedisAdapter {
     private final String SEARCHED_WORD_RANKING = "SearchedLogRanks";
     private final int SEARCHED_RECORD_MAX_SIZE = 10;
     private final String VIEWED_TOUR_PREFIX_KEY = "ViewedToursByUserId:";
-    private final long expireTime = 7; // 7 일로 설정
 
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -49,6 +47,12 @@ public class PostRedisAdapter {
         ));
     }
 
+    // 검색어 삭제
+    public void deleteSearchedLogs(Long userId, String log) {
+        String key = serializeSearchedLogsKey(userId);
+        redisTemplate.opsForZSet().remove(key, log);
+    }
+
     // 인기 검색어 저장
     public void addLogsToTopRank(String log) {
         redisTemplate.opsForZSet().incrementScore(SEARCHED_WORD_RANKING, log, 1D);
@@ -62,18 +66,33 @@ public class PostRedisAdapter {
     }
 
     // 조회한 게시글 기록 저장
-    public void saveViewedToursId(Long userId, Long tourId) {
+    public void saveViewedTourIds(Long userId, Long tourId) {
         String key = serializeViewedToursKey(userId);
-
-        // TODO: 일주일이라는 유효시간을 어떻게 설정할 지 생각해서 수정
-        log.info(String.valueOf(redisTemplate.opsForSet().size(key)));
-
-        // Set 에 추가
         redisTemplate.opsForSet().add(key, String.valueOf(tourId));
-        Set<String> viewedTours = redisTemplate.opsForSet().members(key);
-        if (viewedTours.size() == 1) {
-            redisTemplate.expire(key, expireTime, TimeUnit.DAYS);
-        }
+    }
+
+    // 조회한 게시글 기록 조회
+    public List<Long> getViewedTourIds(Long userId) {
+        String key = serializeViewedToursKey(userId);
+        Set<String> viewedTourIds = redisTemplate.opsForSet().members(key);
+        return viewedTourIds.stream()
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+    }
+
+    // 조회한 기록 삭제
+    public void deleteViewedToursId(Long userId, Long tourId) {
+        String key = serializeViewedToursKey(userId);
+        redisTemplate.opsForSet().remove(key, String.valueOf(tourId));
+    }
+
+    // TODO: 1주일 간격으로 조회한 게시글 기록 삭제 로직
+    // 삭제하는 로직 설계 -> 스케쥴러로 1주일에 싹다 삭제
+    public void deleteUsersLogs() {
+        String searchedLogKeyPattern = "^" + SEARCHED_WORD_PREFIX_KEY + ".*";
+        String viewedToursIdKeyPatter = "^" + VIEWED_TOUR_PREFIX_KEY + ".*";
+
+//        Set<String>
     }
 
     // key 설정

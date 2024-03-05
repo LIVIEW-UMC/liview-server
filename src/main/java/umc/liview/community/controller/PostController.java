@@ -52,15 +52,23 @@ public class PostController {
         return postService.findSearchLogs();
     }
 
+    // 게시글 조회 목록 조회
+    @GetMapping("/community/viewed-posts")
+    public List<PostInfo> findViewedTours(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        Long userId = jwtUserDetails.getUserId();
+        return postService.findViewedTours(userId);
+    }
+
     // 게시글 공개, 비공개 수정
     @PatchMapping("/community/post/{postId}")
-    public void togglePostController(@PathVariable Long postId){ postService.togglePostService(postId);}
+    public void togglePostController(@PathVariable Long postId){
+        postService.togglePostService(postId);
+    }
 
     //미분류 게시물 조회
     @GetMapping("/community/post/{userId}")
     public List<SimpleTourDTO> getNonClassPostController(@PathVariable Long userId, @AuthenticationPrincipal JwtUserDetails jwtUserDetails ){
         Long myId = jwtUserDetails.getUserId();
-
         return postService.getNonClassPostService(myId,userId);
     }
 

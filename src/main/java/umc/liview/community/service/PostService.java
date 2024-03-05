@@ -10,7 +10,6 @@ import umc.liview.community.repository.LikesRepository;
 import umc.liview.community.repository.adapter.PostJpaAdapter;
 import umc.liview.community.repository.adapter.PostRedisAdapter;
 import umc.liview.community.repository.PostRepository;
-import umc.liview.community.service.dto.PostCommandMapper;
 import umc.liview.community.service.dto.response.PostInfo;
 import umc.liview.exception.BusinessException;
 import umc.liview.exception.NotFoundException;
@@ -111,21 +110,21 @@ public class PostService {
     // 게시글 조회 - 시간순, 조회수
     @Transactional(readOnly = true)
     public List<PostInfo> findPostInfos(Long userId, String sortedBy, int page) {
-        verifyAndFindUser(userId);
-        return findPosts(sortedBy, page);
+        verifyUser(userId);
+        return findPostInfos(sortedBy, page);
     }
 
     // 게시글 검색 - 시간순, 조회수
     @Transactional
     public List<PostInfo> searchPostInfos(Long userId, String searchValue, String sortedBy, int page) {
         // 검색어 저장
-        verifyAndFindUser(userId);
+        verifyUser(userId);
         saveUserSearchedWord(userId, searchValue);
         saveSearchedWordToRanks(searchValue);
 
         // 검색
-        List<Long> searchedTours = searchTours(searchValue, page);
-        return searchPosts(searchedTours, sortedBy);
+        List<Long> searchedTours = searchTourIds(searchValue, page);
+        return searchPostInfos(searchedTours, sortedBy);
     }
 
     // 검색어 랭킹 조회
@@ -134,41 +133,11 @@ public class PostService {
         return findMostSearchedWord();
     }
 
-    private List<String> findMostSearchedWord() {
-        return postRedisAdapter.getTopSearchedLogs(10);
-    }
-
-    private void saveSearchedWordToRanks(String searchValue) {
-        postRedisAdapter.addLogsToTopRank(searchValue);
-    }
-
-    private void saveUserSearchedWord(Long userId, String searchValue) {
-        postRedisAdapter.addSearchedLog(userId, searchValue);
-    }
-
-    private User verifyAndFindUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND, userId));
-    }
-
-    private List<Long> searchTours(String searchValue, int page) {
-        return postJpaAdapter.searchTours(page, searchValue);
-    }
-
-    private List<PostInfo> searchPosts(List<Long> searchedTourIds, String sortedBy) {
-        return switch (sortedBy) {
-            case "date" -> postJpaAdapter.searchPostsByDate(searchedTourIds);
-            case "views" -> postJpaAdapter.searchPostsByViews(searchedTourIds);
-            default -> throw new BusinessException(ErrorCode.INVALID_REQUEST_PARAMETER);
-        };
-    }
-
-    private List<PostInfo> findPosts(String sortedBy, int page) {
-        return switch (sortedBy) {
-            case "date" -> postJpaAdapter.findPostsSortedByDate(page);
-            case "views" -> postJpaAdapter.findPostsSortedByViews(page);
-            default -> throw new BusinessException(ErrorCode.INVALID_REQUEST_PARAMETER);
-        };
+    // 조회한 게시글 조회
+    @Transactional(readOnly = true)
+    public List<PostInfo> findViewedTours(Long userId) {
+        List<Long> viewedTourIds = findViewedTourIds(userId);
+        return searchPostInfos(viewedTourIds, "date");
     }
 
     @Transactional
@@ -185,16 +154,12 @@ public class PostService {
             return putImage(tourList);
 
         }
-
     }
-
 
     @Transactional
     public Tour getTour(Long tourId) {
         return tourRepository.getReferenceById(tourId);
     }
-
-
 
     @Transactional
     public List<SimpleTourDTO> putImage(List<Tour> tourList){
@@ -223,7 +188,7 @@ public class PostService {
         tourImagesList.add(tourImageService.getThumbnailDetail(tourId));
         tourImagesList.addAll(tourImageService.getNotThumbailDetail(tourId));
         increaseViewCount(post);
-        postRedisAdapter.saveViewedToursId(userId, tourId);
+        postRedisAdapter.saveViewedTourIds(userId, tourId);
 
         return DetailIncompletedTourDTO.builder()
                 .tourId(tourId)
@@ -265,5 +230,46 @@ public class PostService {
     public Long getUserId(Long tourId) {
         Tour tour = tourRepository.getReferenceById(tourId);
         return tour.getUser().getId();
+    }
+
+    private List<Long> findViewedTourIds(Long userId) {
+        return postRedisAdapter.getViewedTourIds(userId);
+    }
+
+    private List<String> findMostSearchedWord() {
+        return postRedisAdapter.getTopSearchedLogs(10);
+    }
+
+    private void saveSearchedWordToRanks(String searchValue) {
+        postRedisAdapter.addLogsToTopRank(searchValue);
+    }
+
+    private void saveUserSearchedWord(Long userId, String searchValue) {
+        postRedisAdapter.addSearchedLog(userId, searchValue);
+    }
+
+    private void verifyUser(Long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND, userId));
+    }
+
+    private List<Long> searchTourIds(String searchValue, int page) {
+        return postJpaAdapter.searchTours(page, searchValue);
+    }
+
+    private List<PostInfo> searchPostInfos(List<Long> searchedTourIds, String sortedBy) {
+        return switch (sortedBy) {
+            case "date" -> postJpaAdapter.searchPostsByDate(searchedTourIds);
+            case "views" -> postJpaAdapter.searchPostsByViews(searchedTourIds);
+            default -> throw new BusinessException(ErrorCode.INVALID_REQUEST_PARAMETER);
+        };
+    }
+
+    private List<PostInfo> findPostInfos(String sortedBy, int page) {
+        return switch (sortedBy) {
+            case "date" -> postJpaAdapter.findPostsSortedByDate(page);
+            case "views" -> postJpaAdapter.findPostsSortedByViews(page);
+            default -> throw new BusinessException(ErrorCode.INVALID_REQUEST_PARAMETER);
+        };
     }
 }
