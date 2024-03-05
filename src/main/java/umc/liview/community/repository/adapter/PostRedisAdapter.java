@@ -86,13 +86,26 @@ public class PostRedisAdapter {
         redisTemplate.opsForSet().remove(key, String.valueOf(tourId));
     }
 
-    // TODO: 1주일 간격으로 조회한 게시글 기록 삭제 로직
-    // 삭제하는 로직 설계 -> 스케쥴러로 1주일에 싹다 삭제
+    // 검색어 기록 및 조회한 게시글 목록 삭제
     public void deleteUsersLogs() {
-        String searchedLogKeyPattern = "^" + SEARCHED_WORD_PREFIX_KEY + ".*";
-        String viewedToursIdKeyPatter = "^" + VIEWED_TOUR_PREFIX_KEY + ".*";
+        String searchedLogKeyPattern = SEARCHED_WORD_PREFIX_KEY + "*";
+        String viewedToursIdKeyPattern = VIEWED_TOUR_PREFIX_KEY + "*";
 
-//        Set<String>
+        Set<String> viewedTourIdKeys = findKeys(viewedToursIdKeyPattern);
+        deleteKeys(viewedTourIdKeys);
+
+        Set<String> searchedLogKeys = findKeys(searchedLogKeyPattern);
+        deleteKeys(searchedLogKeys);
+    }
+
+    private void deleteKeys(Set<String> keys) {
+        keys.stream().map(
+                redisTemplate::delete
+        ).collect(Collectors.toSet());
+    }
+
+    private Set<String> findKeys(String keyPattern) {
+        return redisTemplate.keys(keyPattern);
     }
 
     // key 설정
