@@ -76,6 +76,12 @@ public class UserController {
         return userService.findSearchLogs(extractUserId(jwtUserDetails));
     }
 
+    // 검색기록 삭제
+    @DeleteMapping("/users/search/log")
+    public void deleteSearchLog(@RequestParam String value, @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        userService.deleteSearchLog(extractUserId(jwtUserDetails), value);
+    }
+
     private long extractUserId(JwtUserDetails jwtUserDetails) {
         return jwtUserDetails.getUserId();
     }

@@ -125,6 +125,12 @@ public class UserService {
         return postRedisAdapter.findSearchedLogs(userId);
     }
 
+    // 검색기록 삭제
+    @Transactional
+    public void deleteSearchLog(Long userId, String log) {
+        postRedisAdapter.deleteSearchedLogs(userId, log);
+    }
+
     private User getUserById(Long userId){
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND, userId));
