@@ -130,7 +130,6 @@ public class PostService {
     // 검색어 랭킹 조회
     @Transactional(readOnly = true)
     public List<String> findSearchLogs() {
-        postRedisAdapter.deleteUsersLogs();
         return findMostSearchedWord();
     }
 

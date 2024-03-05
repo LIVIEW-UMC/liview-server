@@ -5,10 +5,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import umc.liview.common.utils.formatter.TimeFormatter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
@@ -68,44 +66,31 @@ public class PostRedisAdapter {
     // 조회한 게시글 기록 저장
     public void saveViewedTourIds(Long userId, Long tourId) {
         String key = serializeViewedToursKey(userId);
-        redisTemplate.opsForSet().add(key, String.valueOf(tourId));
+        String hashKey = String.valueOf(tourId);
+        String randomValue = UUID.randomUUID().toString();
+
+        redisTemplate.opsForHash().put(key, hashKey, randomValue);
+        redisTemplate.expire(hashKey, 7, TimeUnit.DAYS);
     }
 
     // 조회한 게시글 기록 조회
     public List<Long> getViewedTourIds(Long userId) {
         String key = serializeViewedToursKey(userId);
-        Set<String> viewedTourIds = redisTemplate.opsForSet().members(key);
+        Set<Object> viewedTourIds = redisTemplate.opsForHash().keys(key);
         return viewedTourIds.stream()
+                .map(String::valueOf)
                 .map(Long::parseLong)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     // 조회한 기록 삭제
-    public void deleteViewedToursId(Long userId, Long tourId) {
+    public void deleteViewedToursId(Long userId, List<Long> tourIds) {
         String key = serializeViewedToursKey(userId);
-        redisTemplate.opsForSet().remove(key, String.valueOf(tourId));
-    }
-
-    // 검색어 기록 및 조회한 게시글 목록 삭제
-    public void deleteUsersLogs() {
-        String searchedLogKeyPattern = SEARCHED_WORD_PREFIX_KEY + "*";
-        String viewedToursIdKeyPattern = VIEWED_TOUR_PREFIX_KEY + "*";
-
-        Set<String> viewedTourIdKeys = findKeys(viewedToursIdKeyPattern);
-        deleteKeys(viewedTourIdKeys);
-
-        Set<String> searchedLogKeys = findKeys(searchedLogKeyPattern);
-        deleteKeys(searchedLogKeys);
-    }
-
-    private void deleteKeys(Set<String> keys) {
-        keys.stream().map(
-                redisTemplate::delete
-        ).collect(Collectors.toSet());
-    }
-
-    private Set<String> findKeys(String keyPattern) {
-        return redisTemplate.keys(keyPattern);
+        List<String> hashKeys = tourIds.stream()
+                .map(String::valueOf)
+                .toList();
+        
+        redisTemplate.opsForHash().delete(key, hashKeys);
     }
 
     // key 설정
