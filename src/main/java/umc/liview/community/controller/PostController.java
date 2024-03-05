@@ -58,8 +58,8 @@ public class PostController {
 
     // 게시글 조회 기록 삭제
     @DeleteMapping("community/viewed-posts")
-    public void deleteViewedPostLogs(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @RequestParam List<Long> tourId) {
-//        postService.deleteViewedTourLogs();
+    public void deleteViewedPostLogs(@AuthenticationPrincipal JwtUserDetails jwtUserDetails, @RequestParam List<Long> tourIds) {
+        postService.deleteViewedTourLogs(extractUserId(jwtUserDetails), tourIds);
     }
 
     // 게시글 공개, 비공개 수정

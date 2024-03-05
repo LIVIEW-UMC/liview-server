@@ -32,6 +32,10 @@ public class AuthController {
 
     @PostMapping("/auth/logout")
     public void logout(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        authService.logout(userDetails.getUserId());
+        authService.logout(extractUserId(userDetails));
+    }
+
+    private long extractUserId(JwtUserDetails userDetails) {
+        return userDetails.getUserId();
     }
 }

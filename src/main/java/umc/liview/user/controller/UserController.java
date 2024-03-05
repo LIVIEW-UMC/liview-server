@@ -19,14 +19,12 @@ public class UserController {
     @PostMapping("/follow/{follower_id}")
     public void follow(@PathVariable("follower_id") Long follower_id,
                        @AuthenticationPrincipal JwtUserDetails jwtUserDetails){
-
-        Long user_id = jwtUserDetails.getUserId();;
-        userService.followUser(follower_id,user_id);
+        userService.followUser(follower_id, extractUserId(jwtUserDetails));
     }
 
     @GetMapping("/users")
     public UserResponseDTO.SimpleProfile userSimple(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
-        Long userId = jwtUserDetails.getUserId();
+        Long userId = extractUserId(jwtUserDetails);
         return userService.getSimpleProfile(userId);
     }
 
@@ -37,51 +35,48 @@ public class UserController {
 
     @GetMapping("/users/detail")
     public UserResponseDTO.UserProfile userProfile(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
-        Long userId = jwtUserDetails.getUserId();
-        return userService.getUserProfile(userId);
+        return userService.getUserProfile(extractUserId(jwtUserDetails));
     }
 
     @PutMapping("/users/myInfo")
     public void putUserInfo(@AuthenticationPrincipal JwtUserDetails jwtUserDetails,
                             @RequestPart(value = "userProfile") UserRequestDTO.PutUserProfile userProfile,
                             @RequestPart(value = "file", required = false) MultipartFile file){
-        Long userId = jwtUserDetails.getUserId();
-        userService.putUserProfile(userId, userProfile, file);
+        userService.putUserProfile(extractUserId(jwtUserDetails), userProfile, file);
     }
 
     @GetMapping("/users/privacy-info")
     public UserResponseDTO.UserPrivacy getUserPrivacy(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
-        Long userId = jwtUserDetails.getUserId();
-        return userService.getPrivacyInfo(userId);
+        return userService.getPrivacyInfo(extractUserId(jwtUserDetails));
     }
 
     @PatchMapping("/users/email-approval")
     public void patchEmailApproval(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
-        Long userId = jwtUserDetails.getUserId();
-        userService.patchEmailPrivacy(userId);
+        userService.patchEmailPrivacy(extractUserId(jwtUserDetails));
     }
 
     @PatchMapping("/users/board-approval")
     public void patchBoardApproval(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
-        Long userId = jwtUserDetails.getUserId();
-        userService.patchBoardPrivacy(userId);
+        userService.patchBoardPrivacy(extractUserId(jwtUserDetails));
     }
 
     @DeleteMapping("/users/myInfo")
     public void deleteUser(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
-        Long userId = jwtUserDetails.getUserId();
-        userService.deleteUser(userId);
+        userService.deleteUser(extractUserId(jwtUserDetails));
     }
 
     @GetMapping("/users/myId")
     public Long getMyIdController(@AuthenticationPrincipal JwtUserDetails jwtUserDetails){
-        return jwtUserDetails.getUserId();
+        return extractUserId(jwtUserDetails);
     }
 
     // 검색기록 조회
     @GetMapping("/users/search/log")
     public List<String> findSearchLogs(@AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
-        Long userId = jwtUserDetails.getUserId();
-        return userService.findSearchLogs(userId);
+        return userService.findSearchLogs(extractUserId(jwtUserDetails));
+    }
+
+    private long extractUserId(JwtUserDetails jwtUserDetails) {
+        return jwtUserDetails.getUserId();
     }
 }

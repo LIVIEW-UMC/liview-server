@@ -19,7 +19,6 @@ public class PostRedisAdapter {
     private final String VIEWED_TOUR_PREFIX_KEY = "ViewedToursByUserId:";
 
     private final RedisTemplate<String, String> redisTemplate;
-
     public PostRedisAdapter(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
@@ -66,8 +65,8 @@ public class PostRedisAdapter {
     // 조회한 게시글 기록 저장
     public void saveViewedTourIds(Long userId, Long tourId) {
         String key = serializeViewedToursKey(userId);
-        String hashKey = String.valueOf(tourId);
-        String randomValue = UUID.randomUUID().toString();
+        String hashKey = key + ":" + tourId;
+        String randomValue = String.valueOf(tourId);
 
         redisTemplate.opsForHash().put(key, hashKey, randomValue);
         redisTemplate.expire(hashKey, 7, TimeUnit.DAYS);
@@ -76,21 +75,26 @@ public class PostRedisAdapter {
     // 조회한 게시글 기록 조회
     public List<Long> getViewedTourIds(Long userId) {
         String key = serializeViewedToursKey(userId);
-        Set<Object> viewedTourIds = redisTemplate.opsForHash().keys(key);
-        return viewedTourIds.stream()
+        List<String> hashKeys = redisTemplate.opsForHash().keys(key)
+                .stream().map(String::valueOf)
+                .toList();
+
+        return hashKeys.stream()
+                .map(hashKey -> redisTemplate.opsForHash().get(key, hashKey))
                 .map(String::valueOf)
                 .map(Long::parseLong)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     // 조회한 기록 삭제
     public void deleteViewedToursId(Long userId, List<Long> tourIds) {
         String key = serializeViewedToursKey(userId);
-        List<String> hashKeys = tourIds.stream()
-                .map(String::valueOf)
-                .toList();
-        
-        redisTemplate.opsForHash().delete(key, hashKeys);
+        tourIds.stream()
+                .map(tourId -> {
+                    String hashKey = key + ":" + tourId;
+                    return redisTemplate.opsForHash().delete(key, hashKey);
+                })
+                .collect(Collectors.toList());
     }
 
     // key 설정
