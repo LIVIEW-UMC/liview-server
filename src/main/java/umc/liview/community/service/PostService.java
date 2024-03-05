@@ -140,6 +140,12 @@ public class PostService {
         return searchPostInfos(viewedTourIds, "date");
     }
 
+    // 조회한 게시글 기록 삭제
+    @Transactional
+    public void deleteViewedTourLogs(Long userId, List<Long> tourIds) {
+        postRedisAdapter.deleteViewedToursId(userId, tourIds);
+    }
+
     @Transactional
     public List<SimpleTourDTO> getNonClassPostService(Long myId, Long userId) {
         //내 거 조회 -> 전체
