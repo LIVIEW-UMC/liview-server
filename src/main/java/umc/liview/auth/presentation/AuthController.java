@@ -22,7 +22,7 @@ public class AuthController {
 
     @GetMapping("/auth/{socialType}/login")
     public void oauth2Login(HttpServletResponse response, @PathVariable(name = "socialType") String socialLoginPath) throws IOException {
-        response.sendRedirect("https://jin-myserver.shop/oauth2/authorization/" + socialLoginPath);
+        response.sendRedirect("http://localhost:8080/oauth2/authorization/" + socialLoginPath);
     }
 
     @PostMapping("/auth/reissue")
@@ -32,6 +32,10 @@ public class AuthController {
 
     @PostMapping("/auth/logout")
     public void logout(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        authService.logout(userDetails.getUserId());
+        authService.logout(extractUserId(userDetails));
+    }
+
+    private long extractUserId(JwtUserDetails userDetails) {
+        return userDetails.getUserId();
     }
 }

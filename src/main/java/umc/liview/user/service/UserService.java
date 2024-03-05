@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import umc.liview.community.repository.adapter.PostRedisAdapter;
 import umc.liview.config.s3.AmazonS3Manager;
 import umc.liview.exception.NotFoundException;
 import umc.liview.exception.code.ErrorCode;
@@ -17,6 +18,7 @@ import umc.liview.user.dto.UserDTO;
 import umc.liview.user.dto.UserRequestDTO;
 import umc.liview.user.dto.UserResponseDTO;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final FollowRepositiory followRepository;
     private final AmazonS3Manager s3Manager;
+    private final PostRedisAdapter postRedisAdapter;
 
     //Refactor
     //ServiceImpl 추가,DAO 추가, Autiowired로 레포지토리 의존성 주입,DataHandler ?
@@ -114,6 +117,18 @@ public class UserService {
         followRepository.deleteAllByFollowerId(userId);
         followRepository.deleteAllByUser(userById);
         userRepository.delete(userById);
+    }
+
+    // 검색기록 조회
+    @Transactional(readOnly = true)
+    public List<String> findSearchLogs(Long userId) {
+        return postRedisAdapter.findSearchedLogs(userId);
+    }
+
+    // 검색기록 삭제
+    @Transactional
+    public void deleteSearchLog(Long userId, String log) {
+        postRedisAdapter.deleteSearchedLogs(userId, log);
     }
 
     private User getUserById(Long userId){
