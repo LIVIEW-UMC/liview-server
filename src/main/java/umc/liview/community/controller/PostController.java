@@ -40,8 +40,8 @@ public class PostController {
 
     // 게시글 조회 - 날짜별
     @GetMapping("/community/search")
-    public List<PostInfo> findPostsByDate(@RequestBody PostSearchDto postSearchDto, @RequestParam int page, @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
-        return postService.searchPostInfos(extractUserId(jwtUserDetails), postSearchDto.searchValue(), postSearchDto.sortedBy(), page);
+    public List<PostInfo> findPostsByDate(@RequestParam String searchValue, @RequestParam String sortedBy, @RequestParam int page, @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
+        return postService.searchPostInfos(extractUserId(jwtUserDetails), searchValue, sortedBy, page);
     }
 
     // 검색기록 랭킹 조회
