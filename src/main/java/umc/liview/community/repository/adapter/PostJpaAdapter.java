@@ -25,7 +25,7 @@ public class PostJpaAdapter {
                             " where ti.isThumbnail = true and p.postStatus = :postStatus" +
                             " order by p.createdAt desc", PostInfo.class)
                 .setParameter("postStatus", Post.PostStatus.PUBLIC)
-                .setFirstResult(page)
+                .setFirstResult(page*20)
                 .setMaxResults(20)
                 .getResultList();
     }
@@ -40,7 +40,7 @@ public class PostJpaAdapter {
                             " where ti.isThumbnail = true and p.postStatus = :postStatus" +
                             " order by p.viewCounts desc", PostInfo.class)
                 .setParameter("postStatus", Post.PostStatus.PUBLIC)
-                .setFirstResult(page)
+                .setFirstResult(page*20)
                 .setMaxResults(20)
                 .getResultList();
     }
@@ -55,7 +55,7 @@ public class PostJpaAdapter {
                             " where t.title like concat('%', :searchValue, '%')" +
                             " or ta.name like concat('%', :searchValue, '%')", Long.class)
                 .setParameter("searchValue", searchValue)
-                .setFirstResult(page)
+                .setFirstResult(page*20)
                 .setMaxResults(20)
                 .getResultList();
     }
