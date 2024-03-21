@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 ;
 import umc.liview.community.domain.Post;
 import umc.liview.community.service.dto.response.PostInfo;
+import umc.liview.tour.domain.Tour;
 
 import java.util.List;
 
@@ -18,14 +19,14 @@ public class PostJpaAdapter {
     // 게시글 조회- 날짜순
     public List<PostInfo> findPostsSortedByDate(int page) {
         return em.createQuery(
-                "select new umc.liview.community.service.dto.response.PostInfo(t.post.id, t.id, ti.imageUrl)" +
-                            " from Tour t" +
-                            " join t.tourImages ti" +
-                            " left join t.post p" +
-                            " where ti.isThumbnail = true and p.postStatus = :postStatus" +
-                            " order by p.createdAt desc", PostInfo.class)
+                        "select new umc.liview.community.service.dto.response.PostInfo(t.post.id, t.id, ti.imageUrl)" +
+                                " from Tour t" +
+                                " join t.tourImages ti" +
+                                " left join t.post p" +
+                                " where ti.isThumbnail = true and p.postStatus = :postStatus" +
+                                " order by p.createdAt desc", PostInfo.class)
                 .setParameter("postStatus", Post.PostStatus.PUBLIC)
-                .setFirstResult(page*20)
+                .setFirstResult(page * 20)
                 .setMaxResults(20)
                 .getResultList();
     }

@@ -38,7 +38,7 @@ public class PostController {
         return postService.findPostInfos(extractUserId(jwtUserDetails), sortedBy, page);
     }
 
-    // 게시글 조회 - 날짜별
+    // 게시글 검색 - 날짜별
     @GetMapping("/community/search")
     public List<PostInfo> findPostsByDate(@RequestParam String searchValue, @RequestParam String sortedBy, @RequestParam int page, @AuthenticationPrincipal JwtUserDetails jwtUserDetails) {
         return postService.searchPostInfos(extractUserId(jwtUserDetails), searchValue, sortedBy, page);

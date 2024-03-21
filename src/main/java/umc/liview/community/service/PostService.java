@@ -1,6 +1,7 @@
 package umc.liview.community.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.liview.community.domain.Likes;
@@ -30,6 +31,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -122,7 +124,9 @@ public class PostService {
         saveUserSearchedWord(userId, searchValue);
         saveSearchedWordToRanks(searchValue);
 
-        // 검색
+        // TODO 2024/03/21 : 트러블 발생
+        // 1) 페이징이 처음에 돼서는 안됨
+        // 2) 검색어가 태그 여러개 안에 돼있을 때 -> 중복 해결해야함.
         List<Long> searchedTours = searchTourIds(searchValue, page);
         return searchPostInfos(searchedTours, sortedBy);
     }
@@ -209,7 +213,6 @@ public class PostService {
     @Transactional
     public void likePost(Long postId, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException("post not found"));
-        User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("user not found"));
 
         Optional<Likes> existingLikes = likesRepository.findByPostAndUserId(post,userId);
         if(existingLikes.isPresent()) {
@@ -230,12 +233,6 @@ public class PostService {
             return "false";
         }
 
-    }
-
-    @Transactional
-    public Long getUserId(Long tourId) {
-        Tour tour = tourRepository.getReferenceById(tourId);
-        return tour.getUser().getId();
     }
 
     private List<Long> findViewedTourIds(Long userId) {
